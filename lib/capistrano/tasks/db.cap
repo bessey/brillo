@@ -1,0 +1,23 @@
+namespace :db do
+  desc "Run the DB scrubber and push to S3"
+  task :scrub do
+    on primary(:batch) do
+      with rails_env: fetch(:stage) do
+        within current_path do
+          execute :rake, 'db:scrub'
+        end
+      end
+    end
+  end
+
+  desc "Run the S3 scrubbed DB loader"
+  task :load do
+    on primary(:batch) do
+      with rails_env: fetch(:rails_env) do
+        within current_path do
+          execute :rake, 'db:load_scrubbed'
+        end
+      end
+    end
+  end
+end
