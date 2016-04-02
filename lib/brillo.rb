@@ -1,4 +1,5 @@
 require "brillo/version"
+require "brillo/scrubber"
 require 'brillo/railtie' if defined?(Rails)
 require 'polo'
 
@@ -7,6 +8,7 @@ class Brillo
   S3_BUCKET = 'scrubbed_databases2'
   JUMBLE_SEED = rand(640000)
   LATEST_LIMIT = 1_000
+  ParseError = StandardError.new
 
   # Define some procs as scrubbing strategies for Polo
   SCRUBBERS = {
@@ -35,8 +37,12 @@ class Brillo
     dump_structure_and_migrations_to(scrub_path)
     File.open(scrub_path, "a") do |sql_file|
       klass_association_map.each do |klass, options|
-        klass = klass.camelize.constantize
-        tactic = options.fetch("tactic").to_sym
+        klass = deserialize_class(klass)
+        begin
+          tactic = options.fetch("tactic").to_sym
+        rescue KeyError
+          raise ParseError, "tactic not specified for class #{klass}"
+        end
         associations = options.fetch("associations", [])
         explore_class(klass, tactic, associations) do |insert|
           dry_run ? puts(insert) : sql_file.write(insert)
@@ -115,6 +121,12 @@ class Brillo
     # Overrides the path the structure is dumped to in Rails >= 3.2
     ENV['SCHEMA'] = ENV['DB_STRUCTURE']  = path.to_s
     Rake::Task["db:structure:dump"].invoke
+  end
+
+  def deserialize_class(klass)
+    klass.camelize.constantize
+  rescue
+    raise ParseError, "Could not process class '#{klass}'"
   end
 
   def load_aws_keys
