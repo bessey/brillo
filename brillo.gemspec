@@ -31,4 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "polo"
 
   spec.add_development_dependency "rails", ">= 3.2"
+  spec.add_development_dependency "rspec", "~> 3.4"
+  spec.add_development_dependency "pry"
+  spec.add_development_dependency "benchmark-ips"
 end

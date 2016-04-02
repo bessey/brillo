@@ -1,22 +1,24 @@
 require "brillo/version"
-require "brillo/scrubber"
 require 'brillo/railtie' if defined?(Rails)
 require 'polo'
 
 class Brillo
   AWS_KEY_PATH = '/etc/ec2_secure_env.yml'
   S3_BUCKET = 'scrubbed_databases2'
-  JUMBLE_SEED = rand(640000)
+  JUMBLE_PRNG = Random.new
   LATEST_LIMIT = 1_000
   ParseError = StandardError.new
 
   # Define some procs as scrubbing strategies for Polo
   SCRUBBERS = {
     default_time: ->(t) { t.nil? ? Time.now.to_s(:sql) : t },
-    email:        ->(e) { e.match(/@caring.com/) ? e : "#{Digest::MD5.hexdigest(e)}@example.com" },
-    jumble:       ->(j) { j.downcase.chars.shuffle(random: Random.new(JUMBLE_SEED)).join },
-    name:         ->(n) { n.split(' ').map{|word| word.downcase.chars.shuffle(random: Random.new(JUMBLE_SEED)).join }.map{|w|w.capitalize}.join(' ') },
+    email:        ->(e) { e.match(/@caring.com/) ? e : Digest::MD5.hexdigest(e) + "@example.com".freeze },
+    jumble:       ->(j) { j.downcase.chars.shuffle!(random: JUMBLE_PRNG.clone).join },
     phone:        ->(n) { n = n.split(' ').first; n && n.length > 9 ? n[0..-5] + n[-1] + n[-2] + n[-3] + n[-4] : n},   # strips extensions
+    name:         ->(n) { n.downcase.split(' ').map do |word|
+        word.chars.shuffle!(random: JUMBLE_PRNG.clone).join
+      end.each(&:capitalize!).join(' ')
+    },
   }
 
   TACTICS = {
