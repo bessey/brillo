@@ -68,7 +68,7 @@ class Brillo
     end
 
     case db_config[:adapter]
-    when "mysql"
+    when "mysql2"
       `mysql --host #{db_config[:host]} -u #{db_config[:username]} #{db_config[:password] ? "-p#{db_config[:password]}" : ""} #{db_config[:database]} < #{dump_path}`
     when "postgresql"
       `psql --host #{db_config[:host]} -U #{db_config[:username]} #{db_config[:password] ? "-W#{db_config[:password]}" : ""} #{db_config[:database]} < #{dump_path}`
@@ -99,7 +99,7 @@ class Brillo
     Polo.configure do
       obfuscate @obfuscations
       # Postgres does not support on_duplicate
-      if adapter == "mysql"
+      if adapter == "mysql2"
         on_duplicate :ignore
       end
     end
