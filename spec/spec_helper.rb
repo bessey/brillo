@@ -1,3 +1,4 @@
+require 'rails'
 require 'brillo'
 
 RSpec.configure do |config|

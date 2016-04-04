@@ -1,5 +1,5 @@
 require "brillo/version"
-require 'brillo/railtie' if defined?(Rails)
+require 'brillo/railtie'
 require 'polo'
 
 class Brillo
@@ -26,24 +26,24 @@ class Brillo
     all:    -> (klass) { klass.pluck(:id) }
   }
 
-  attr_reader :scrub_name, :logger, :s3_keys, :dry_run, :klass_association_map
+  attr_reader :scrub_name, :logger, :s3_keys, :dry_run, :klass_association_map, :obfuscations
 
   def initialize(config, logger: Rails.logger)
     parse_config(config)
-    configure_polo
     load_aws_keys
     @logger = logger
   end
 
   def scrub_to_s3
     dump_structure_and_migrations_to(scrub_path)
+    configure_polo
     File.open(scrub_path, "a") do |sql_file|
       klass_association_map.each do |klass, options|
         klass = deserialize_class(klass)
         begin
           tactic = options.fetch("tactic").to_sym
         rescue KeyError
-          raise ParseError, "tactic not specified for class #{klass}"
+          raise ParseError, "Tactic not specified for class #{klass}"
         end
         associations = options.fetch("associations", [])
         explore_class(klass, tactic, associations) do |insert|
@@ -91,7 +91,7 @@ class Brillo
     @scrub_name            = config.fetch("name")
     @dry_run               = config.fetch("dry_run", false)
     @klass_association_map = config.fetch("explore")
-    @obfuscations          = config.fetch("obfuscations", [])
+    @obfuscations          = parse_obfuscations config.fetch("obfuscations", [])
   end
 
   def configure_polo
@@ -117,6 +117,17 @@ class Brillo
     command = "#{aws_command} get #{S3_BUCKET}/#{source} #{dest}"
     stdout_and_stderr_str, status = Open3.capture2e([aws_env, command].join(' '))
     raise stdout_and_stderr_str if !status.success?
+  end
+
+  # Convert generic cross table obfuscations to symbols so Polo parses them correctly
+  # "my_table.field" => "my_table.field"
+  # "my_field"       => :my_field
+  def parse_obfuscations(obfuscations)
+    obfuscations.each_pair.with_object({}) do |field_and_strategy, hash|
+      field, strategy = field_and_strategy
+      strategy_proc = SCRUBBERS.fetch(strategy.to_sym) rescue raise ParseError, "Scrub strategy '#{strategy}' not found"
+      field.match(/\./) ? hash[field] = strategy_proc : hash[field.to_sym] = strategy_proc
+    end
   end
 
   def dump_structure_and_migrations_to(path)
