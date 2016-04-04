@@ -125,7 +125,11 @@ class Brillo
   def parse_obfuscations(obfuscations)
     obfuscations.each_pair.with_object({}) do |field_and_strategy, hash|
       field, strategy = field_and_strategy
-      strategy_proc = SCRUBBERS.fetch(strategy.to_sym) rescue raise ParseError, "Scrub strategy '#{strategy}' not found"
+      begin
+        strategy_proc = SCRUBBERS.fetch(strategy.to_sym)
+      rescue KeyError
+        raise ParseError, "Scrub strategy '#{strategy}' not found"
+      end
       field.match(/\./) ? hash[field] = strategy_proc : hash[field.to_sym] = strategy_proc
     end
   end
