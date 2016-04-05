@@ -95,12 +95,10 @@ class Brillo
   end
 
   def configure_polo
-    adapter = db_config[:adapter]
-    Polo.configure do
-      obfuscate @obfuscations
-      # Postgres does not support on_duplicate
-      if adapter == "mysql2"
-        on_duplicate :ignore
+    Polo.configure.tap do |config|
+      config.obfuscate obfuscations
+      if db_config[:adapter] == "mysql2"
+        config.on_duplicate :ignore
       end
     end
   end
