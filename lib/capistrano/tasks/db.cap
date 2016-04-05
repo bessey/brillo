@@ -15,7 +15,7 @@ namespace :db do
     on primary(:batch) do
       with rails_env: fetch(:rails_env) do
         within current_path do
-          execute :rake, 'db:load_scrubbed'
+          execute :rake, 'db:load'
         end
       end
     end
