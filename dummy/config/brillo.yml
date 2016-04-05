@@ -1,0 +1,9 @@
+name: dummy
+dry_run: true       # Enable to print scrubber output to console instead of uploading
+explore:
+  account:               # Name of ActiveRecord class in snake_case
+    tactic: all       # Scrubbing tactic to use (see Brillo:TACTICS for choices)
+obfuscations:         #
+  accounts.name: name
+  accounts.email: email
+  accounts.phone: phone

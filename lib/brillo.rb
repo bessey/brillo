@@ -47,7 +47,7 @@ class Brillo
         end
         associations = options.fetch("associations", [])
         explore_class(klass, tactic, associations) do |insert|
-          dry_run ? puts(insert) : sql_file.write(insert)
+          sql_file.puts(insert)
         end
       end
     end
@@ -81,7 +81,7 @@ class Brillo
     ids = tactic_or_ids.is_a?(Symbol) ? TACTICS.fetch(tactic_or_ids).call(klass) : tactic_or_ids
     logger.info("Scrubbing #{ids.length} #{klass} rows with associations #{associations}")
     Polo.explore(klass, ids, associations).each do |row|
-      yield "#{row};\n"
+      yield "#{row};"
     end
   end
 
@@ -91,14 +91,16 @@ class Brillo
     @scrub_name            = config.fetch("name")
     @dry_run               = config.fetch("dry_run", false)
     @klass_association_map = config.fetch("explore")
-    @obfuscations          = parse_obfuscations config.fetch("obfuscations", [])
+    @obfuscations          = parse_obfuscations config.fetch("obfuscations", {})
   end
 
   def configure_polo
-    Polo.configure.tap do |config|
-      config.obfuscate obfuscations
-      if db_config[:adapter] == "mysql2"
-        config.on_duplicate :ignore
+    obfs = obfuscations
+    adapter = db_config[:adapter]
+    Polo.configure do
+      obfuscate obfs
+      if adapter == "mysql2"
+        on_duplicate :ignore
       end
     end
   end
@@ -124,11 +126,11 @@ class Brillo
     obfuscations.each_pair.with_object({}) do |field_and_strategy, hash|
       field, strategy = field_and_strategy
       begin
-        strategy_proc = SCRUBBERS.fetch(strategy.to_sym)
+        strategy_lambda = SCRUBBERS.fetch(strategy.to_sym)
       rescue KeyError
         raise ParseError, "Scrub strategy '#{strategy}' not found"
       end
-      field.match(/\./) ? hash[field] = strategy_proc : hash[field.to_sym] = strategy_proc
+      field.match(/\./) ? hash[field] = strategy_lambda : hash[field.to_sym] = strategy_lambda
     end
   end
 

@@ -1,0 +1,16 @@
+defaults: &defaults
+  adapter: mysql2
+  encoding: utf8
+  host: localhost
+  username: root
+  password:
+  socket: /tmp/mysql.sock
+  pool: 10
+
+test:
+  <<: *defaults
+  database: brillo_test
+
+development:
+  <<: *defaults
+  database: brillo_development

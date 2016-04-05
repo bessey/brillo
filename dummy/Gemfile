@@ -1,0 +1,21 @@
+source 'https://rubygems.org'
+
+gem 'rails', '4.2.5.1'
+gem 'mysql2'
+# bundle exec rake doc:rails generates the API under doc/api.
+gem 'sdoc', '~> 0.4.0', group: :doc
+
+gem 'brillo', path: '../'
+gem 'polo', github: 'IFTTT/polo', ref: 'f43f2c0518e42aca42383c278e30064f439b57a4'
+
+group :development, :test do
+  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'byebug'
+  gem 'rspec-rails', '~> 3.4'
+  gem 'pry'
+end
+
+group :development do
+  # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
+  gem 'spring'
+end
