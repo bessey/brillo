@@ -81,7 +81,7 @@ class Brillo
     ids = tactic_or_ids.is_a?(Symbol) ? TACTICS.fetch(tactic_or_ids).call(klass) : tactic_or_ids
     logger.info("Scrubbing #{ids.length} #{klass} rows with associations #{associations}")
     Polo.explore(klass, ids, associations).each do |row|
-      yield "#{row};"
+      yield "#{row};\n"
     end
   end
 
