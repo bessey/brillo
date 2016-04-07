@@ -58,7 +58,7 @@ module Brillo
     def send_to_s3
       return unless config.send_to_s3
       `gzip -f #{config.dump_path}` if config.compress
-      command = "#{aws_command} put #{S3_BUCKET}/#{config.remote_filename} #{config.remote_path}"
+      command = "#{aws_command} put #{config.s3_bucket}/#{config.remote_filename} #{config.remote_path}"
       logger.info "Uploading #{config.remote_path} to S3"
       stdout_and_stderr_str, status = Open3.capture2e([aws_env, command].join(' '))
       raise stdout_and_stderr_str if !status.success?
