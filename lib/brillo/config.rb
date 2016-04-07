@@ -1,7 +1,11 @@
 module Brillo
   class Config
     ParseError = StandardError.new
-    attr_reader :app_name, :compress, :obfuscations, :klass_association_map, :db, :send_to_s3, :fetch_from_s3
+    AWS_KEY_PATH = '/etc/ec2_secure_env.yml'
+    S3_BUCKET = 'scrubbed_databases2'
+    attr_reader :app_name, :compress, :obfuscations, :klass_association_map, :db, :send_to_s3, :fetch_from_s3,
+      :aws_key_path, :s3_bucket
+
     def initialize(options = {})
       @app_name = options.fetch("name")
       @obfuscations = parse_obfuscations(options["obfuscations"] || {})
@@ -9,6 +13,8 @@ module Brillo
       @compress = options.fetch("compress",  true)
       @fetch_from_s3 = options.fetch("fetch_from_s3", true)
       @send_to_s3 = options.fetch("send_to_s3", true)
+      @aws_key_path = options.fetch("aws_key_path", AWS_KEY_PATH)
+      @s3_bucket = options.fetch("s3_bucket", S3_BUCKET)
     rescue KeyError => e
       raise ParseError, e
     end

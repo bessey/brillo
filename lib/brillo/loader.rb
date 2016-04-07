@@ -46,19 +46,20 @@ module Brillo
     private
 
     def sql_load_command
-      case config.db[:adapter]
+      db = config.db
+      case db[:adapter]
       when "mysql2"
-        "mysql --host #{config.db[:host]} -u #{config.db[:username]} #{config.db[:password] ? "-p#{config.db[:password]}" : ""} #{config.db[:database]} < #{config.dump_path}"
+        "mysql --host #{db[:host]} -u #{db[:username]} #{db[:password] ? "-p#{db[:password]}" : ""} #{db[:database]}"
       when "postgresql"
-        "psql --host #{config.db[:host]} -U #{config.db[:username]} #{config.db[:password] ? "-W#{config.db[:password]}" : ""} #{config.db[:database]} < #{config.dump_path}"
+        "psql --host #{db[:host]} -U #{db[:username]} #{db[:password] ? "-W#{db[:password]}" : ""} #{db[:database]}"
       else
-        raise "Unsupported DB adapter #{config.db[:adapter]}"
+        raise "Unsupported DB adapter #{db[:adapter]}"
       end
     end
 
     def s3_get!(source, dest)
       logger.info "Downloading #{source} from S3"
-      command = "#{aws_command} get #{S3_BUCKET}/#{source} #{dest}"
+      command = "#{aws_command} get #{config.s3_bucket}/#{source} #{dest}"
       stdout_and_stderr_str, status = Open3.capture2e([aws_env, command].join(' '))
       raise stdout_and_stderr_str if !status.success?
       logger.info "Download complete!"

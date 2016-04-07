@@ -1,8 +1,5 @@
 module Brillo
   module Common
-    AWS_KEY_PATH = '/etc/ec2_secure_env.yml'
-    S3_BUCKET = 'scrubbed_databases2'
-
     attr_reader :s3_keys
 
     def parse_config(config)
@@ -12,8 +9,8 @@ module Brillo
     private
 
     def load_aws_keys
-      if File.exist?(AWS_KEY_PATH)
-        @s3_keys = YAML.load_file(AWS_KEY_PATH)
+      if File.exist?(config.aws_key_path)
+        @s3_keys = YAML.load_file(config.aws_key_path)
       else
         key = ENV["AWS_SECRET_KEY"] || ENV["EC2_SECRET_KEY"]
         unless key && key.length > 10
