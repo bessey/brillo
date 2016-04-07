@@ -16,7 +16,7 @@ RSpec.describe "rake db:scrub" do
     expect(output).not_to include "555-413-5234"
   end
 
-  it "loads a scrub", :focus do
+  it "loads a scrub" do
     Rake::Task["db:scrub"].invoke
     Account.delete_all
     Rake::Task["db:load"].invoke
