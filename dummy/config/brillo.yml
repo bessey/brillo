@@ -1,5 +1,7 @@
 name: dummy
-dry_run: true       # Enable to print scrubber output to console instead of uploading
+compress: false
+send_to_s3: false
+fetch_from_s3: false
 explore:
   account:               # Name of ActiveRecord class in snake_case
     tactic: all       # Scrubbing tactic to use (see Brillo:TACTICS for choices)
