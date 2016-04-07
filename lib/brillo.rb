@@ -56,7 +56,6 @@ class Brillo
 
   def load_from_s3
     raise "Do not do this" if Rails.env.production?
-
     unless ENV['skip_download']
       FileUtils.rm [dump_path, scrub_path], force: true
       s3_get!(scrub_filename, scrub_path)
@@ -64,17 +63,20 @@ class Brillo
     `gunzip #{scrub_path}`
 
     ["db:drop", "db:create"].each do |t|
+      logger.info "Running\n\trake #{t}"
       Rake::Task[t].invoke
     end
 
-    case db_config[:adapter]
-    when "mysql2"
-      `mysql --host #{db_config[:host]} -u #{db_config[:username]} #{db_config[:password] ? "-p#{db_config[:password]}" : ""} #{db_config[:database]} < #{dump_path}`
-    when "postgresql"
-      `psql --host #{db_config[:host]} -U #{db_config[:username]} #{db_config[:password] ? "-W#{db_config[:password]}" : ""} #{db_config[:database]} < #{dump_path}`
-    else
-      raise "Unsupported DB adapter #{db_config[:adapter]}"
-    end
+    command = case db_config[:adapter]
+      when "mysql2"
+        "mysql --host #{db_config[:host]} -u #{db_config[:username]} #{db_config[:password] ? "-p#{db_config[:password]}" : ""} #{db_config[:database]} < #{dump_path}"
+      when "postgresql"
+        "psql --host #{db_config[:host]} -U #{db_config[:username]} #{db_config[:password] ? "-W#{db_config[:password]}" : ""} #{db_config[:database]} < #{dump_path}"
+      else
+        raise "Unsupported DB adapter #{db_config[:adapter]}"
+      end
+    logger.info "Running\n\t#{command}"
+    `#{command}`
   end
 
   def explore_class(klass, tactic_or_ids, associations)
@@ -114,9 +116,11 @@ class Brillo
   end
 
   def s3_get!(source, dest)
+    logger.info "Downloading #{scrub_filename} from S3"
     command = "#{aws_command} get #{S3_BUCKET}/#{source} #{dest}"
     stdout_and_stderr_str, status = Open3.capture2e([aws_env, command].join(' '))
     raise stdout_and_stderr_str if !status.success?
+    logger.info "Download complete!"
   end
 
   # Convert generic cross table obfuscations to symbols so Polo parses them correctly
