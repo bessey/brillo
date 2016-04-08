@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Brillo do
+RSpec.describe Brillo::Config do
   it "converts obfuscation syntax to Polo compatible" do
     config = YAML.load <<-YAML
     name: my_app
@@ -9,10 +9,10 @@ RSpec.describe Brillo do
       created_at:     default_time
       my_table.test:  name
     YAML
-    brillo = Brillo.new(config)
-    expect(brillo.obfuscations).to eq(
-      created_at: Brillo::SCRUBBERS[:default_time],
-      "my_table.test" => Brillo::SCRUBBERS[:name]
+    config = Brillo::Config.new(config)
+    expect(config.obfuscations).to eq(
+      created_at: Brillo::Scrubber::SCRUBBERS[:default_time],
+      "my_table.test" => Brillo::Scrubber::SCRUBBERS[:name]
     )
   end
 end

@@ -1,4 +1,4 @@
-class Brillo
+module Brillo
   class Railtie < Rails::Railtie
     rake_tasks do
       load "tasks/brillo.rake"
