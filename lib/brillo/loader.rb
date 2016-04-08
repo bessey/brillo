@@ -34,7 +34,7 @@ module Brillo
 
     def import_sql
       load_command = if config.compress
-        "zcat #{config.dump_path} | #{sql_load_command}"
+        "gunzip -c #{config.remote_path} | #{sql_load_command}"
       else
         "cat #{config.dump_path} | #{sql_load_command}"
       end
