@@ -9,6 +9,7 @@ module Brillo
     private
 
     def load_aws_keys
+      return if !config.send_to_s3 && !config.fetch_from_s3
       if File.exist?(config.aws_key_path)
         @s3_keys = YAML.load_file(config.aws_key_path)
       else
