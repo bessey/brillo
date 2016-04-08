@@ -32,9 +32,11 @@ module Brillo
     end
 
     def scrub!
+      FileUtils.rm [config.dump_path, config.remote_path], force: true
       configure_polo
       dump_structure_and_migrations
       explore_all_classes
+      compress
       send_to_s3
     end
 
@@ -57,12 +59,19 @@ module Brillo
 
     def send_to_s3
       return unless config.send_to_s3
-      `gzip -f #{config.dump_path}` if config.compress
       logger.info "Uploading #{config.remote_path} to S3"
       aws_s3 "put"
     end
 
     private
+
+    def compress
+      return unless config.compress
+      command = "gzip -f #{config.dump_path}"
+      logger.info "Running\n\t#{command}"
+      stdout_and_stderr_str, status = Open3.capture2e(command)
+      raise stdout_and_stderr_str if !status.success?
+    end
 
     def explore_class(klass, tactic_or_ids, associations)
       ids = tactic_or_ids.is_a?(Symbol) ? TACTICS.fetch(tactic_or_ids).call(klass) : tactic_or_ids
