@@ -93,7 +93,7 @@ module Brillo
 
     def dump_structure_and_migrations
       # Overrides the path the structure is dumped to in Rails >= 3.2
-      ENV['SCHEMA'] = ENV['DB_STRUCTURE'] = config.remote_path.to_s
+      ENV['SCHEMA'] = ENV['DB_STRUCTURE'] = config.dump_path.to_s
       Rake::Task["db:structure:dump"].invoke
     end
 
