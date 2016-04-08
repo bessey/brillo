@@ -1,5 +1,4 @@
 name: dummy
-compress: false
 send_to_s3: false
 fetch_from_s3: false
 explore:

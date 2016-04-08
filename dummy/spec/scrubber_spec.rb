@@ -8,7 +8,8 @@ RSpec.describe "rake db:scrub" do
     Account.create!(name: "Matthew Bessey", email: "mbessey@caring.com", phone: "555-413-5234")
   end
   it "obfuscates as specified in brillo.yml" do
-    Rake::Task["db:scrub"].invoke
+    Brillo.scrub! logger: Logger.new(STDOUT)
+    `gunzip -f #{Rails.root.join "tmp/dummy-scrubbed.dmp.gz"}`
     output = File.read("tmp/dummy-scrubbed.dmp")
     expect(output).to include "mbessey@caring.com"
     expect(output).not_to include "mbessey@gmail.com"
@@ -17,9 +18,9 @@ RSpec.describe "rake db:scrub" do
   end
 
   it "loads a scrub" do
-    Rake::Task["db:scrub"].invoke
+    Brillo.scrub! logger: Logger.new(STDOUT)
     Account.delete_all
-    Rake::Task["db:load"].invoke
+    Brillo.load! logger: Logger.new(STDOUT)
     expect(Account.count).to eq 2
     expect(Account.where(name: "Matthew Bessey").count).to eq 0
   end
