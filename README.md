@@ -8,7 +8,6 @@ Add this line to your application's Gemfile:
 
 ```ruby
 gem 'brillo'
-gem 'polo', github: 'IFTTT/polo' # we rely on edge Polo till they cut a new gem
 ```
 
 And require the capistrano tasks by adding `require 'capistrano/brillo'` to your Capfile.

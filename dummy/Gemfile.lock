@@ -1,17 +1,9 @@
-GIT
-  remote: git://github.com/IFTTT/polo.git
-  revision: f43f2c0518e42aca42383c278e30064f439b57a4
-  ref: f43f2c0518e42aca42383c278e30064f439b57a4
-  specs:
-    polo (0.2.0)
-      activerecord (>= 3.2)
-
 PATH
   remote: ../
   specs:
-    brillo (0.7.0)
+    brillo (0.7.1)
       capistrano (~> 3.0)
-      polo
+      polo (~> 0.3)
       rake (~> 10.0)
 
 GEM
@@ -83,6 +75,8 @@ GEM
     net-ssh (3.1.1)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
+    polo (0.3.0)
+      activerecord (>= 3.2)
     pry (0.10.3)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -161,7 +155,6 @@ DEPENDENCIES
   brillo!
   byebug
   mysql2
-  polo!
   pry
   rails (= 4.2.5.1)
   rspec-rails (~> 3.4)
