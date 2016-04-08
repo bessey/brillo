@@ -21,7 +21,8 @@ module Brillo
     def get_from_s3
       return unless config.fetch_from_s3
       FileUtils.rm [config.dump_path, config.remote_path], force: true
-      s3_get!(config.remote_filename, config.remote_path)
+      logger.info "Downloading #{config.remote_filename} from S3"
+      aws_s3 "get"
     end
 
     def recreate_db
@@ -55,14 +56,6 @@ module Brillo
       else
         raise "Unsupported DB adapter #{db[:adapter]}"
       end
-    end
-
-    def s3_get!(source, dest)
-      logger.info "Downloading #{source} from S3"
-      command = "#{aws_command} get #{config.s3_bucket}/#{source} #{dest}"
-      stdout_and_stderr_str, status = Open3.capture2e([aws_env, command].join(' '))
-      raise stdout_and_stderr_str if !status.success?
-      logger.info "Download complete!"
     end
   end
 end

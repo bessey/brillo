@@ -23,7 +23,14 @@ module Brillo
       end
     end
 
-    def aws_command
+    def aws_s3 api_command
+      command = "#{aws_bin} #{api_command} #{config.s3_bucket}/#{config.remote_filename} #{config.remote_path}"
+      logger.debug "Running:\n\t#{command}"
+      stdout_and_stderr_str, status = Open3.capture2e([aws_env, command].join(' '))
+      raise stdout_and_stderr_str if !status.success?
+    end
+
+    def aws_bin
       if File.exist?('/usr/local/bin/awstk')
         '/usr/local/bin/awstk'
       else
