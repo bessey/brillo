@@ -1,11 +1,13 @@
-# Example Config:
-#
 name: my-app          # Namespace the scrubbed file will occupy
-# dry_run: true       # Enable to print scrubber output to console instead of uploading
+## Optional configuration (with defaults shown)
+# compress: true        # Enables gzip on scrub and ungzip on load
+# send_to_s3: true      # Disable to skip sending to S3, useful for debugging
+# fetch_from_s3: true   # Disable to skip fetching from S3, useful when you have an existing scrub in tmp/
+#
+# obfuscations:
+#   user.name: name     # Scrub table.field with scrubber (see Brillo::SCRUBBERS for choices)
 explore:
   user:               # Name of ActiveRecord class in snake_case
     tactic: all       # Scrubbing tactic to use (see Brillo:TACTICS for choices)
     associations:     # Associations to include in the scrub (ALL associated records included)
       - comments
-# obfuscations:         #
-#   user.name: name     # Scrub table.field with scrubber (see Brillo::SCRUBBERS for choices)
