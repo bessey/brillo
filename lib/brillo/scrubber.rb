@@ -42,6 +42,7 @@ module Brillo
 
     def explore_all_classes
       File.open(config.dump_path, "a") do |sql_file|
+        sql_file.puts(adapter_header)
         klass_association_map.each do |klass, options|
           klass = deserialize_class(klass)
           begin
@@ -54,6 +55,7 @@ module Brillo
             sql_file.puts(insert)
           end
         end
+        sql_file.puts(adapter_footer)
       end
     end
 
@@ -110,6 +112,27 @@ module Brillo
       klass.camelize.constantize
     rescue
       raise ParseError, "Could not process class '#{klass}'"
+    end
+
+    def adapter_header
+      return unless config.db[:adapter] == "mysql2"
+      <<-SQL
+      -- Disable autocommit, uniquechecks, and foreign key checks, for performance on InnoDB
+      -- http://dev.mysql.com/doc/refman/5.5/en/optimizing-innodb-bulk-data-loading.html
+      SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, AUTOCOMMIT = 0;
+      SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;
+      SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;
+      SQL
+    end
+
+    def adapter_footer
+      return unless config.db[:adapter] == "mysql2"
+      <<-SQL
+      SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+      SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+      SET AUTOCOMMIT = @OLD_AUTOCOMMIT;
+      COMMIT;
+      SQL
     end
   end
 end
