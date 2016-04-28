@@ -1,12 +1,14 @@
 require "brillo/version"
-require 'brillo/railtie'
+
+require 'brillo/helpers/exec_helper'
+require 'brillo/logger'
 require 'brillo/common'
+
+require 'brillo/dumper/mysql_dumper'
+require 'brillo/railtie'
 require 'brillo/config'
 require 'brillo/scrubber'
 require 'brillo/loader'
-require 'brillo/logger'
-require 'brillo/helpers/exec_helper'
-require 'brillo/dumper/mysql_dumper'
 require 'polo'
 
 module Brillo

@@ -1,5 +1,6 @@
 module Brillo
   module Common
+    include Helpers::ExecHelper
     attr_reader :s3_keys
 
     def parse_config(config)
@@ -25,10 +26,7 @@ module Brillo
     end
 
     def aws_s3 api_command
-      command = "#{aws_bin} #{api_command} #{config.s3_bucket}/#{config.remote_filename} #{config.remote_path}"
-      logger.debug "Running:\n\t#{command}"
-      stdout_and_stderr_str, status = Open3.capture2e([aws_env, command].join(' '))
-      raise stdout_and_stderr_str if !status.success?
+      execute!("#{aws_bin} #{api_command} #{config.s3_bucket}/#{config.remote_filename} #{config.remote_path}")
     end
 
     def aws_bin

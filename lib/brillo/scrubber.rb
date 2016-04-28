@@ -2,6 +2,8 @@ module Brillo
   # Responsible for creating a fresh scrubbed SQL copy of the database,
   # as specified via config, and uploading to S3
   class Scrubber
+    include Helpers::ExecHelper
+    include Logger
     include Common
     JUMBLE_PRNG = Random.new
     LATEST_LIMIT = 1_000
@@ -23,12 +25,11 @@ module Brillo
       all:    -> (klass) { klass.pluck(:id) }
     }
 
-    attr_reader :config, :logger
+    attr_reader :config
 
-    def initialize(config, logger: Rails.logger)
+    def initialize(config)
       parse_config(config)
       load_aws_keys
-      @logger = logger
     end
 
     def scrub!
@@ -69,10 +70,7 @@ module Brillo
 
     def compress
       return unless config.compress
-      command = "gzip -f #{config.dump_path}"
-      logger.info "Running\n\t#{command}"
-      stdout_and_stderr_str, status = Open3.capture2e(command)
-      raise stdout_and_stderr_str if !status.success?
+      execute!("gzip -f #{config.dump_path}")
     end
 
     def explore_class(klass, tactic_or_ids, associations)

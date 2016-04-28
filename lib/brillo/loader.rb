@@ -2,14 +2,15 @@ module Brillo
   # Responsible for fetching an existing SQL scrub from S3, cleaning the database,
   # and loading the SQL.
   class Loader
+    include Helpers::ExecHelper
+    include Logger
     include Common
-    attr_reader :config, :logger
+    attr_reader :config
 
-    def initialize(config, logger: Rails.logger)
+    def initialize(config)
       raise "⚠️ DON'T LOAD IN PRODUCTION! ⚠️" if Rails.env.production?
       parse_config(config)
       load_aws_keys
-      @logger = logger
     end
 
     def load!
@@ -33,14 +34,11 @@ module Brillo
     end
 
     def import_sql
-      load_command = if config.compress
-        "gunzip -c #{config.remote_path} | #{sql_load_command}"
+      if config.compress
+        execute!("gunzip -c #{config.remote_path} | #{sql_load_command}")
       else
-        "cat #{config.dump_path} | #{sql_load_command}"
+        execute!("cat #{config.dump_path} | #{sql_load_command}")
       end
-      logger.info "Running\n\t#{load_command}"
-      stdout_and_stderr_str, status = Open3.capture2e(load_command)
-      raise stdout_and_stderr_str if !status.success?
       logger.info "Import complete!"
     end
 

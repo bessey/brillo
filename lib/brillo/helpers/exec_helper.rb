@@ -22,7 +22,7 @@ module Brillo
 
       def log_anonymized command_string
         command_string = command_string.gsub(/--password=[^\s]+/, "--password={FILTERED}")
-        logger.info "   > #{command_string}"
+        logger.info "Running \n\t #{command_string}"
       end
     end
   end
