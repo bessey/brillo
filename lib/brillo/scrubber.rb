@@ -103,9 +103,14 @@ module Brillo
     end
 
     def dump_structure_and_migrations
-      # Overrides the path the structure is dumped to in Rails >= 3.2
-      ENV['SCHEMA'] = ENV['DB_STRUCTURE'] = config.dump_path.to_s
-      Rake::Task["db:structure:dump"].invoke
+      case config.db[:adapter]
+      when 'mysql2'
+        Dumper::MysqlDumper.new(config).dump
+      else
+        # Overrides the path the structure is dumped to in Rails >= 3.2
+        ENV['SCHEMA'] = ENV['DB_STRUCTURE'] = config.dump_path.to_s
+        Rake::Task["db:structure:dump"].invoke
+      end
     end
 
     def deserialize_class(klass)

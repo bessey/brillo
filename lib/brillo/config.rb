@@ -40,7 +40,7 @@ module Brillo
     end
 
     def db
-      @db_config ||= ActiveRecord::Base.connection.instance_variable_get(:@config)
+      @db_config ||= ActiveRecord::Base.connection.instance_variable_get(:@config).dup
     end
 
     # Convert generic cross table obfuscations to symbols so Polo parses them correctly

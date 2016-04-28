@@ -4,15 +4,20 @@ require 'brillo/common'
 require 'brillo/config'
 require 'brillo/scrubber'
 require 'brillo/loader'
+require 'brillo/logger'
+require 'brillo/helpers/exec_helper'
+require 'brillo/dumper/mysql_dumper'
 require 'polo'
 
 module Brillo
   def self.scrub!(logger: Logger.new(STDOUT))
-    Scrubber.new(yaml_config, logger: logger).scrub!
+    Brillo::Logger.logger = logger
+    Scrubber.new(yaml_config).scrub!
   end
 
   def self.load!(logger: Logger.new(STDOUT))
-    Loader.new(yaml_config, logger: logger).load!
+    Brillo::Logger.logger = logger
+    Loader.new(yaml_config).load!
   end
 
   def self.yaml_config
