@@ -1,7 +1,7 @@
 PATH
   remote: ../
   specs:
-    brillo (0.8.0)
+    brillo (0.9.1)
       capistrano (~> 3.0)
       polo (~> 0.3)
       rake (~> 10.0)
@@ -55,7 +55,7 @@ GEM
       i18n
       rake (>= 10.0.0)
       sshkit (>= 1.9.0)
-    capistrano-harrow (0.3.2)
+    capistrano-harrow (0.4.0)
     coderay (1.1.0)
     concurrent-ruby (1.0.1)
     diff-lcs (1.2.5)
