@@ -26,7 +26,7 @@ module Brillo
     end
 
     def aws_s3 api_command
-      execute!("#{aws_bin} #{api_command} #{config.s3_bucket}/#{config.remote_filename} #{config.remote_path}")
+      execute!("#{aws_env} #{aws_bin} #{api_command} #{config.s3_bucket}/#{config.remote_filename} #{config.remote_path}")
     end
 
     def aws_bin
