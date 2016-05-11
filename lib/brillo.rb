@@ -12,12 +12,12 @@ require 'brillo/loader'
 require 'polo'
 
 module Brillo
-  def self.scrub!(logger: Logger.new(STDOUT))
+  def self.scrub!(logger: ::Logger.new(STDOUT))
     Brillo::Logger.logger = logger
     Scrubber.new(yaml_config).scrub!
   end
 
-  def self.load!(logger: Logger.new(STDOUT))
+  def self.load!(logger: ::Logger.new(STDOUT))
     Brillo::Logger.logger = logger
     Loader.new(yaml_config).load!
   end
