@@ -1,6 +1,6 @@
 module Brillo
   class Config
-    ParseError = StandardError.new
+    ParseError = Class.new(StandardError)
     AWS_KEY_PATH = '/etc/ec2_secure_env.yml'
     S3_BUCKET = 'scrubbed_databases2'
     attr_reader :app_name, :compress, :obfuscations, :klass_association_map, :db, :send_to_s3, :fetch_from_s3,
