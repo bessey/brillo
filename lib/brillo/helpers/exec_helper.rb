@@ -22,6 +22,8 @@ module Brillo
 
       def log_anonymized command_string
         command_string = command_string.gsub(/--password=[^\s]+/, "--password={FILTERED}")
+        command_string = command_string.gsub(/EC2_ACCESS_KEY=[^\s]+/, "EC2_ACCESS_KEY={FILTERED}")
+        command_string = command_string.gsub(/EC2_SECRET_KEY=[^\s]+/, "EC2_SECRET_KEY={FILTERED}")
         logger.info "Running \n\t #{command_string}"
       end
     end
