@@ -1,6 +1,10 @@
 # Brillo
 
-Brillo is an opinionated ActiveRecord database scrubber + loader, that makes pulling light copies of your production DB easy as `rake db:load`.
+Brillo is a Rails database scrubber and loader, useful for making lightweight copies of your production database for development machines, with sensitive information obfuscated. Most configuration is done through YAML: Specify the models that you want to back up, what associations you want with them, and what fields should be obfuscated (and how).
+
+Once that is done, dropping your local DB and replacing it with the latest scrubbed copy is as easy as `rake db:load`.
+
+Under the hood we use [Polo](https://github.com/IFTTT/polo) to explore the classes and associations you specify in brillo.yml, obfuscated fields as configured.
 
 ## Installation
 
@@ -10,29 +14,29 @@ Add this line to your application's Gemfile:
 gem 'brillo'
 ```
 
-And require the capistrano tasks by adding `require 'capistrano/brillo'` to your Capfile.
-
-### Loading a database in development
-
-```bash
-$ ec2
-$ rake db:load
-```
-
-### Loading a database on an edge
-
-```bash
-$ cap edge db:load
-```
-
-### Configuring a new app
 Generate a starter `brillo.yml` file and `config/initializers/brillo.rb` with
 
 ```bash
 $ rails g brillo_config
 ```
 
-### Example brillo.yml for IMDB
+If you're using Capistrano, add Brillo's tasks to your Capfile:
+
+```ruby
+# Capfile
+require 'capistrano/brillo'
+```
+
+Lastly, since the scrubber is pretty resource intensive you may wish to ensure it runs on separate hardware from your app servers:
+
+```ruby
+# config/deploy.rb
+set :brillo_role, :my_batch_role
+```
+
+## Usage
+
+Here's an example `brillo.yml` for IMDB:
 
 ```yaml
 name: imdb            # Namespace the scrubbed file will occupy in S3
@@ -42,7 +46,7 @@ explore:
     associations:     # Associations to include in the scrub (ALL associated records included)
       - comments
   movie:
-    tactic: latest    # The latest association explores the most recent 1,000 records
+    tactic: latest    # The latest tactic explores the most recent 1,000 records
     associations:
       - actors
       - ratings
@@ -52,6 +56,20 @@ obfuscations:         #
   user.name: name     # Scrub user.name with the "name" scrubber (see Brillo::SCRUBBERS for choices)
   user.phone: phone
   user.email: email
+```
+
+In order to communicate with S3, Brillo expects `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` to be set in the environment. It uses [Tim Kay's AWS cli](http://timkay.com/aws/) to communicate with AWS.
+
+### Loading a database in development
+
+```bash
+$ rake db:load
+```
+
+### Loading a database on a stage
+
+```bash
+$ cap staging db:load
 ```
 
 ### Adding scrub tactics and obfuscations
@@ -76,9 +94,7 @@ end
 
 ```
 
+## To Do
 
-## Development
-
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake false` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+- Support S3 transfer via the usual AWS CLI
+- Support alternative transfer mechanisms

@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Matt Bessey"]
   spec.email         = ["mbessey@caring.com"]
 
-  spec.summary       = %q{Opinionated Rails scrubber}
+  spec.summary       = %q{Rails database scrubber and loader}
   spec.homepage      = "TODO: Put your gem's website or public repo URL here."
   spec.license       = "MIT"
 
