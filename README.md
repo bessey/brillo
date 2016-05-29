@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.com/bessey/brillo.svg?token=z16y9ppDyNfaLAvjjHbK&branch=master)](https://travis-ci.com/bessey/brillo)
+[![Gem Version](https://badge.fury.io/rb/brillo.svg)](https://badge.fury.io/rb/brillo)
 
 # Brillo
 
