@@ -25,17 +25,18 @@ module Brillo
       all:    -> (klass) { klass.pluck(:id) }
     }
 
-    attr_reader :config
+    attr_reader :config, :adapter
 
     def initialize(config)
       @config = config
+      @adapter = adapter_for(config.db[:adapter])
       load_aws_keys
     end
 
     def scrub!
       FileUtils.rm [config.dump_path, config.remote_path], force: true
       configure_polo
-      dump_structure_and_migrations
+      adapter.dump_structure_and_migrations(config)
       explore_all_classes
       compress
       send_to_s3
@@ -43,7 +44,7 @@ module Brillo
 
     def explore_all_classes
       File.open(config.dump_path, "a") do |sql_file|
-        sql_file.puts(adapter_header)
+        sql_file.puts(adapter.header)
         klass_association_map.each do |klass, options|
           begin
             klass = deserialize_class(klass)
@@ -57,7 +58,7 @@ module Brillo
             sql_file.puts(insert)
           end
         end
-        sql_file.puts(adapter_footer)
+        sql_file.puts(adapter.footer)
       end
     end
 
@@ -103,14 +104,12 @@ module Brillo
       end
     end
 
-    def dump_structure_and_migrations
-      case config.db[:adapter]
-      when 'mysql2'
-        Dumper::MysqlDumper.new(config).dump
+    def adapter_for(adapter_name)
+      case adapter_name
+      when :mysql2
+        Adapters::MySQL.new
       else
-        # Overrides the path the structure is dumped to in Rails >= 3.2
-        ENV['SCHEMA'] = ENV['DB_STRUCTURE'] = config.dump_path.to_s
-        Rake::Task["db:structure:dump"].invoke
+        Adapters::Default.new
       end
     end
 
@@ -124,28 +123,6 @@ module Brillo
       options.fetch("tactic").to_sym
     rescue KeyError
       raise ConfigParseError, "Tactic not specified for class #{klass}"
-    end
-
-    def adapter_header
-      return unless config.db[:adapter] == "mysql2"
-      ActiveRecord::Base.connection.dump_schema_information +
-        <<-SQL
-        -- Disable autocommit, uniquechecks, and foreign key checks, for performance on InnoDB
-        -- http://dev.mysql.com/doc/refman/5.5/en/optimizing-innodb-bulk-data-loading.html
-        SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, AUTOCOMMIT = 0;
-        SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS = 0;
-        SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS = 0;
-        SQL
-    end
-
-    def adapter_footer
-      return unless config.db[:adapter] == "mysql2"
-      <<-SQL
-      SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-      SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-      SET AUTOCOMMIT = @OLD_AUTOCOMMIT;
-      COMMIT;
-      SQL
     end
   end
 end

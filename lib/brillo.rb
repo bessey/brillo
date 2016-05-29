@@ -5,6 +5,10 @@ require 'brillo/helpers/exec_helper'
 require 'brillo/logger'
 require 'brillo/common'
 
+require 'brillo/adapters/base'
+require 'brillo/adapters/mysql'
+require 'brillo/adapters/default'
+
 require 'brillo/dumper/mysql_dumper'
 require 'brillo/railtie'
 require 'brillo/config'
