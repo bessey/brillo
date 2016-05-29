@@ -48,7 +48,7 @@ module Brillo
           begin
             klass = deserialize_class(klass)
             tactic = deserialize_tactic(options)
-          rescue ParseError => e
+          rescue ConfigParseError => e
             logger.error "Error in brillo.yml: #{e.message}"
             next
           end
@@ -117,13 +117,13 @@ module Brillo
     def deserialize_class(klass)
       klass.camelize.constantize
     rescue
-      raise Config::ParseError, "Could not process class '#{klass}'"
+      raise Config::ConfigParseError, "Could not process class '#{klass}'"
     end
 
     def deserialize_tactic(options)
       options.fetch("tactic").to_sym
     rescue KeyError
-      raise ParseError, "Tactic not specified for class #{klass}"
+      raise ConfigParseError, "Tactic not specified for class #{klass}"
     end
 
     def adapter_header

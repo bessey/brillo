@@ -6,26 +6,26 @@ module Brillo
       :aws_key_path, :s3_bucket
 
     def initialize(options = {})
-      @app_name = options.fetch("name")
-      @klass_association_map = options.fetch("explore")
-      @compress = options.fetch("compress",  true)
-      @fetch_from_s3 = options.fetch("fetch_from_s3", true)
-      @send_to_s3 = options.fetch("send_to_s3", true)
-      @aws_key_path = options.fetch("aws_key_path", AWS_KEY_PATH)
-      @s3_bucket = options.fetch("s3_bucket", S3_BUCKET)
-      @obfuscations = parse_obfuscations(options["obfuscations"] || {})
+      @app_name =               options.fetch("name")
+      @klass_association_map =  options["explore"] || {}
+      @compress =               options.fetch("compress",  true)
+      @fetch_from_s3 =          options.fetch("fetch_from_s3", true)
+      @send_to_s3 =             options.fetch("send_to_s3", true)
+      @aws_key_path =           options.fetch("aws_key_path", AWS_KEY_PATH)
+      @s3_bucket =              options.fetch("s3_bucket", S3_BUCKET)
+      @obfuscations =           parse_obfuscations(options["obfuscations"] || {})
     rescue KeyError => e
-      raise ParseError, e
+      raise ConfigParseError, e
     end
 
     def verify!
       @obfuscations.each do |field, strategy|
         next if Scrubber::SCRUBBERS[strategy]
-        raise ParseError, "Scrub strategy '#{strategy}' not found, but required by '#{field}'"
+        raise ConfigParseError, "Scrub strategy '#{strategy}' not found, but required by '#{field}'"
       end
       @klass_association_map.each do |klass, _|
         next if klass.camelize.safe_constantize
-        raise ParseError, "Class #{klass} not found"
+        raise ConfigParseError, "Class #{klass} not found"
       end
       self
     end
