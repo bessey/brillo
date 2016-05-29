@@ -11,8 +11,8 @@ RSpec.describe Brillo::Config do
     YAML
     config = Brillo::Config.new(config)
     expect(config.obfuscations).to eq(
-      created_at: Brillo::Scrubber::SCRUBBERS[:default_time],
-      "my_table.test" => Brillo::Scrubber::SCRUBBERS[:name]
+      created_at: :default_time,
+      "my_table.test" => :name
     )
   end
 end

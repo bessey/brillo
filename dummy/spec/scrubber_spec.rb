@@ -2,10 +2,13 @@ require 'rails_helper'
 load 'Rakefile'
 
 RSpec.describe "rake db:scrub" do
+  let(:account1) { Account.create!(name: "Matthew Bessey", email: "mbessey@gmail.com", phone: "555-413-5234") }
+  let(:account2) { Account.create!(name: "Matthew Bessey", email: "mbessey@caring.com", phone: "555-413-5234") }
+  let(:obfuscated_phone_number) { (555_000_0000 + account1.id).to_s }
   before do
     Account.delete_all
-    Account.create!(name: "Matthew Bessey", email: "mbessey@gmail.com", phone: "555-413-5234")
-    Account.create!(name: "Matthew Bessey", email: "mbessey@caring.com", phone: "555-413-5234")
+    account1
+    account2
   end
   it "obfuscates as specified in brillo.yml" do
     Brillo.scrub! logger: Logger.new(STDOUT)
@@ -15,6 +18,7 @@ RSpec.describe "rake db:scrub" do
     expect(output).not_to include "mbessey@gmail.com"
     expect(output).not_to include "Matthew Bessey"
     expect(output).not_to include "555-413-5234"
+    expect(output).to include obfuscated_phone_number
   end
 
   it "loads a scrub" do

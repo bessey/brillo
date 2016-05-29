@@ -6,6 +6,7 @@ gem 'mysql2'
 gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'brillo', path: '../'
+gem 'polo', github: 'IFTTT/polo'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

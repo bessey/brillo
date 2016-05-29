@@ -28,7 +28,7 @@ module Brillo
     attr_reader :config
 
     def initialize(config)
-      parse_config(config)
+      @config = config
       load_aws_keys
     end
 
@@ -48,7 +48,7 @@ module Brillo
           begin
             klass = deserialize_class(klass)
             tactic = deserialize_tactic(options)
-          rescue Config::ParseError => e
+          rescue ParseError => e
             logger.error "Error in brillo.yml: #{e.message}"
             next
           end
@@ -87,7 +87,9 @@ module Brillo
     end
 
     def obfuscations
-      config.obfuscations
+      config.obfuscations.map do |field, strategy|
+        [field, SCRUBBERS.fetch(strategy)]
+      end.to_h
     end
 
     def configure_polo
@@ -121,7 +123,7 @@ module Brillo
     def deserialize_tactic(options)
       options.fetch("tactic").to_sym
     rescue KeyError
-      raise Config::ParseError, "Tactic not specified for class #{klass}"
+      raise ParseError, "Tactic not specified for class #{klass}"
     end
 
     def adapter_header

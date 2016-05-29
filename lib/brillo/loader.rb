@@ -9,7 +9,7 @@ module Brillo
 
     def initialize(config)
       raise "⚠️ DON'T LOAD IN PRODUCTION! ⚠️" if Rails.env.production?
-      parse_config(config)
+      @config = config
       load_aws_keys
     end
 

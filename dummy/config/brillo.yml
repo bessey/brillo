@@ -7,4 +7,4 @@ explore:
 obfuscations:         #
   accounts.name: name
   accounts.email: email
-  accounts.phone: phone
+  accounts.phone: phone_with_id

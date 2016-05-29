@@ -26,7 +26,7 @@ $ cap edge db:load
 ```
 
 ### Configuring a new app
-Generate a starter `brillo.yml` file with
+Generate a starter `brillo.yml` file and `config/initializers/brillo.rb` with
 
 ```bash
 $ rails g brillo_config
@@ -42,7 +42,7 @@ explore:
     associations:     # Associations to include in the scrub (ALL associated records included)
       - comments
   movie:
-    tactic: latest    # The latest assocation explores the most recent 1,000 records
+    tactic: latest    # The latest association explores the most recent 1,000 records
     associations:
       - actors
       - ratings
@@ -53,6 +53,29 @@ obfuscations:         #
   user.phone: phone
   user.email: email
 ```
+
+### Adding scrub tactics and obfuscations
+
+If the built in record selection tactics aren't enough for you, or you need a custom obfuscation strategy, you can add them via the initializer. They are available in the YAML config like any other strategy.
+
+```ruby
+# config/initializers/brillo.rb
+
+Brillo.configure do |config|
+  config.add_tactic :oldest, -> (klass) { klass.order(created_at: :desc).limit(1000) }
+
+  config.add_obfuscation :remove_ls, -> (field) {
+    field.gsub(/l/, "X")
+  }
+
+  # If you need the context of the entire record being obfuscated, it is available in the second argument
+  config.add_obfuscation :phone_with_id, -> (field, instance) {
+    (555_000_0000 + instance.id).to_s
+  }
+end
+
+```
+
 
 ## Development
 

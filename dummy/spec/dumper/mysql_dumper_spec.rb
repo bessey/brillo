@@ -2,7 +2,7 @@ require 'rails_helper'
 load 'Rakefile'
 
 RSpec.describe Brillo::Dumper::MysqlDumper do
-  let(:config) { Brillo::Config.new(Brillo.yaml_config) }
+  let(:config) { Brillo.config }
   subject { Brillo::Dumper::MysqlDumper }
 
   before do

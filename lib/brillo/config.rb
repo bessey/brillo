@@ -1,6 +1,5 @@
 module Brillo
   class Config
-    ParseError = Class.new(StandardError)
     AWS_KEY_PATH = '/etc/ec2_secure_env.yml'
     S3_BUCKET = 'scrubbed_databases2'
     attr_reader :app_name, :compress, :obfuscations, :klass_association_map, :db, :send_to_s3, :fetch_from_s3,
@@ -8,15 +7,35 @@ module Brillo
 
     def initialize(options = {})
       @app_name = options.fetch("name")
-      @obfuscations = parse_obfuscations(options["obfuscations"] || {})
       @klass_association_map = options.fetch("explore")
       @compress = options.fetch("compress",  true)
       @fetch_from_s3 = options.fetch("fetch_from_s3", true)
       @send_to_s3 = options.fetch("send_to_s3", true)
       @aws_key_path = options.fetch("aws_key_path", AWS_KEY_PATH)
       @s3_bucket = options.fetch("s3_bucket", S3_BUCKET)
+      @obfuscations = parse_obfuscations(options["obfuscations"] || {})
     rescue KeyError => e
       raise ParseError, e
+    end
+
+    def verify!
+      @obfuscations.each do |field, strategy|
+        next if Scrubber::SCRUBBERS[strategy]
+        raise ParseError, "Scrub strategy '#{strategy}' not found, but required by '#{field}'"
+      end
+      @klass_association_map.each do |klass, _|
+        next if klass.camelize.safe_constantize
+        raise ParseError, "Class #{klass} not found"
+      end
+      self
+    end
+
+    def add_obfuscation(name, scrubber)
+      Scrubber::SCRUBBERS[name] = scrubber
+    end
+
+    def add_tactic(name, tactic)
+      Scrubber::TACTICS[name] = tactic
     end
 
     def app_tmp
@@ -49,12 +68,8 @@ module Brillo
     def parse_obfuscations(obfuscations)
       obfuscations.each_pair.with_object({}) do |field_and_strategy, hash|
         field, strategy = field_and_strategy
-        begin
-          strategy_lambda = Scrubber::SCRUBBERS.fetch(strategy.to_sym)
-        rescue KeyError
-          raise ParseError, "Scrub strategy '#{strategy}' not found"
-        end
-        field.match(/\./) ? hash[field] = strategy_lambda : hash[field.to_sym] = strategy_lambda
+        strategy = strategy.to_sym
+        field.match(/\./) ? hash[field] = strategy : hash[field.to_sym] = strategy
       end
     end
   end

@@ -3,10 +3,6 @@ module Brillo
     include Helpers::ExecHelper
     attr_reader :s3_keys
 
-    def parse_config(config)
-      @config = Config.new(config)
-    end
-
     private
 
     def load_aws_keys
