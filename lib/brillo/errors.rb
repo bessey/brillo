@@ -1,4 +1,4 @@
 module Brillo
   ConfigParseError    = Class.new(StandardError)
-  ConfigError   = Class.new(StandardError)
+  CredentialsError   = Class.new(StandardError)
 end

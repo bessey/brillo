@@ -37,7 +37,7 @@ module Brillo
         else
           key = ENV["AWS_SECRET_KEY"] || ENV["EC2_SECRET_KEY"]
           unless key && key.length > 10
-            raise "AWS keys not available. Did you . /etc/ec2_secure_env?"
+            raise CredentialsError, "AWS credentials not found. Expected AWS_ACCESS_KEY and AWS_SECRET_KEY to be set!"
           end
           @credentials = {
             'aws_access_key' => ENV["AWS_ACCESS_KEY"] || ENV["EC2_ACCESS_KEY"],
