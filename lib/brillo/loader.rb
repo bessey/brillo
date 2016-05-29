@@ -4,26 +4,17 @@ module Brillo
   class Loader
     include Helpers::ExecHelper
     include Logger
-    include Common
     attr_reader :config
 
     def initialize(config)
       raise "⚠️ DON'T LOAD IN PRODUCTION! ⚠️" if Rails.env.production?
       @config = config
-      load_aws_keys
     end
 
     def load!
-      get_from_s3
+      config.transferrer.download
       recreate_db
       import_sql
-    end
-
-    def get_from_s3
-      return unless config.fetch_from_s3
-      FileUtils.rm [config.dump_path, config.remote_path], force: true
-      logger.info "Downloading #{config.remote_filename} from S3"
-      aws_s3 "get"
     end
 
     def recreate_db
@@ -45,15 +36,7 @@ module Brillo
     private
 
     def sql_load_command
-      db = config.db
-      case db[:adapter]
-      when "mysql2"
-        "mysql --host #{db[:host]} -u #{db[:username]} #{db[:password] ? "-p#{db[:password]}" : ""} #{db[:database]}"
-      when "postgresql"
-        "psql --host #{db[:host]} -U #{db[:username]} #{db[:password] ? "-W#{db[:password]}" : ""} #{db[:database]}"
-      else
-        raise "Unsupported DB adapter #{db[:adapter]}"
-      end
+      config.adapter.load_command
     end
   end
 end

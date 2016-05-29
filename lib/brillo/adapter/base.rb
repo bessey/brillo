@@ -1,6 +1,10 @@
 module Brillo
-  module Adapters
+  module Adapter
     class Base
+      attr_reader :config
+      def initialize(db_config)
+        @config = db_config
+      end
       def header
         ActiveRecord::Base.connection.dump_schema_information
       end
@@ -13,6 +17,10 @@ module Brillo
         # Overrides the path the structure is dumped to in Rails >= 3.2
         ENV['SCHEMA'] = ENV['DB_STRUCTURE'] = config.dump_path.to_s
         Rake::Task["db:structure:dump"].invoke
+      end
+
+      def load_command
+        raise NotImplementedError
       end
     end
   end

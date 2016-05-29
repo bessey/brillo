@@ -62,6 +62,22 @@ module Brillo
       @db_config ||= ActiveRecord::Base.connection.instance_variable_get(:@config).dup
     end
 
+    # TODO support other tranfer systems
+    def transferrer
+      Transferrer::S3.new(self)
+    end
+
+    def adapter
+      case db[:adapter].to_sym
+      when :mysql2
+        Adapter::MySQL.new(db)
+      when :postgres
+        Adapter::Postgres.new(db)
+      else
+        raise ConfigParseError, "Unsupported DB adapter #{db[:adapter]}"
+      end
+    end
+
     # Convert generic cross table obfuscations to symbols so Polo parses them correctly
     # "my_table.field" => "my_table.field"
     # "my_field"       => :my_field

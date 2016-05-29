@@ -1,5 +1,5 @@
 module Brillo
-  module Adapters
+  module Adapter
     class MySQL < Base
       def header
         super + <<-SQL
@@ -22,6 +22,10 @@ module Brillo
 
       def dump_structure_and_migrations(config)
         Dumper::MysqlDumper.new(config).dump
+      end
+
+      def load_command
+        "mysql --host #{config[:host]} -u #{config[:username]} #{config[:password] ? "-p#{config[:password]}" : ""} #{config[:database]}"
       end
     end
   end

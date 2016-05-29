@@ -4,7 +4,6 @@ module Brillo
   class Scrubber
     include Helpers::ExecHelper
     include Logger
-    include Common
     JUMBLE_PRNG = Random.new
     LATEST_LIMIT = 1_000
 
@@ -25,12 +24,11 @@ module Brillo
       all:    -> (klass) { klass.pluck(:id) }
     }
 
-    attr_reader :config, :adapter
+    attr_reader :config, :adapter, :transferrer
 
     def initialize(config)
       @config = config
-      @adapter = adapter_for(config.db[:adapter])
-      load_aws_keys
+      @adapter = config.adapter
     end
 
     def scrub!
@@ -39,7 +37,7 @@ module Brillo
       adapter.dump_structure_and_migrations(config)
       explore_all_classes
       compress
-      send_to_s3
+      config.transferrer.upload
     end
 
     def explore_all_classes
@@ -60,12 +58,6 @@ module Brillo
         end
         sql_file.puts(adapter.footer)
       end
-    end
-
-    def send_to_s3
-      return unless config.send_to_s3
-      logger.info "Uploading #{config.remote_path} to S3"
-      aws_s3 "put"
     end
 
     private
@@ -101,15 +93,6 @@ module Brillo
         if adapter == "mysql2"
           on_duplicate :ignore
         end
-      end
-    end
-
-    def adapter_for(adapter_name)
-      case adapter_name
-      when :mysql2
-        Adapters::MySQL.new
-      else
-        Adapters::Default.new
       end
     end
 

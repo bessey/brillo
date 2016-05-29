@@ -3,11 +3,12 @@ require "brillo/version"
 require 'brillo/errors'
 require 'brillo/helpers/exec_helper'
 require 'brillo/logger'
-require 'brillo/common'
 
-require 'brillo/adapters/base'
-require 'brillo/adapters/mysql'
-require 'brillo/adapters/default'
+require 'brillo/adapter/base'
+require 'brillo/adapter/mysql'
+require 'brillo/adapter/postgres'
+
+require 'brillo/transferrer/s3'
 
 require 'brillo/dumper/mysql_dumper'
 require 'brillo/railtie'
