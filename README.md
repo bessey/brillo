@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/bessey/brillo.svg?token=z16y9ppDyNfaLAvjjHbK&branch=master)](https://travis-ci.com/bessey/brillo)
+
 # Brillo
 
 Brillo is a Rails database scrubber and loader, useful for making lightweight copies of your production database for development machines, with sensitive information obfuscated. Most configuration is done through YAML: Specify the models that you want to back up, what associations you want with them, and what fields should be obfuscated (and how).
@@ -12,6 +14,8 @@ Add this line to your application's Gemfile:
 
 ```ruby
 gem 'brillo'
+# We currently rely on an unreleased version of Polo
+gem 'polo',   github: 'IFTTT/polo'
 ```
 
 Generate a starter `brillo.yml` file and `config/initializers/brillo.rb` with

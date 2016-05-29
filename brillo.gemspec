@@ -9,8 +9,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Matt Bessey"]
   spec.email         = ["mbessey@caring.com"]
 
-  spec.summary       = %q{Rails database scrubber and loader}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.summary       = %q{Rails database scrubber and loader, great for seeding your dev db with real but sanitized data}
+  spec.homepage      = "https://github.com/bessey/brillo"
   spec.license       = "MIT"
 
   if spec.respond_to?(:metadata)
