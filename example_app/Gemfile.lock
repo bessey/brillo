@@ -63,6 +63,7 @@ GEM
       jmespath (~> 1.0)
     aws-sdk-resources (2.3.9)
       aws-sdk-core (= 2.3.9)
+    benchmark-ips (2.1.1)
     builder (3.2.2)
     byebug (8.2.2)
     capistrano (3.5.0)
@@ -169,6 +170,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  benchmark-ips
   brillo!
   byebug
   mysql2
