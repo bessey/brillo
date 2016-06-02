@@ -65,6 +65,8 @@ obfuscations:         #
 
 Brillo uses [the official aws-sdk](https://github.com/aws/aws-sdk-ruby) to communicate with S3. There [are a number of ways](https://github.com/aws/aws-sdk-ruby#configuration) to pass your S3 credentials, but the simplest is to set `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` in your environment.
 
+If you'd like to see the gem in use, check out the  [/example_app](https://github.com/bessey/brillo/tree/master/example_app) directory.
+
 ### Loading a database in development
 
 ```bash

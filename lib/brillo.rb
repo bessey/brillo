@@ -1,3 +1,7 @@
+require 'yaml'
+require 'active_support'
+require 'active_support/core_ext/string/inflections'
+require 'active_record'
 require "brillo/version"
 
 require 'brillo/errors'
