@@ -1,11 +1,14 @@
 name: my-app          # Namespace the scrubbed file will occupy
 ## Optional configuration (with defaults shown)
-# compress: true        # Enables gzip on scrub and ungzip on load
-# send_to_s3: true      # Disable to skip sending to S3, useful for debugging
-# fetch_from_s3: true   # Disable to skip fetching from S3, useful when you have an existing scrub in tmp/
+# compress: true      # Enables gzip on scrub and ungzip on load
 #
 # obfuscations:
-#   user.name: name     # Scrub table.field with scrubber (see Brillo::SCRUBBERS for choices)
+#   user.name: name   # Scrub table.field with scrubber (see Brillo::SCRUBBERS for choices)
+transfer:
+  # enabled: true     # Disable to skip transferring to and from S3, running purely locally
+  enabled: true
+  # bucket: database-scrubs
+  # region: us-west-2 # Override to change the region to somewhere nearer you
 explore:
   user:               # Name of ActiveRecord class in snake_case
     tactic: all       # Scrubbing tactic to use (see Brillo:TACTICS for choices)

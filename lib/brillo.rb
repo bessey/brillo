@@ -8,6 +8,7 @@ require 'brillo/adapter/base'
 require 'brillo/adapter/mysql'
 require 'brillo/adapter/postgres'
 
+require 'brillo/transferrer/config'
 require 'brillo/transferrer/s3'
 
 require 'brillo/dumper/mysql_dumper'

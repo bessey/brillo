@@ -2,17 +2,13 @@ module Brillo
   class Config
     AWS_KEY_PATH = '/etc/ec2_secure_env.yml'
     S3_BUCKET = 'scrubbed_databases2'
-    attr_reader :app_name, :compress, :obfuscations, :klass_association_map, :db, :send_to_s3, :fetch_from_s3,
-      :aws_key_path, :s3_bucket
+    attr_reader :app_name, :compress, :obfuscations, :klass_association_map, :db, :transfer_config
 
     def initialize(options = {})
       @app_name =               options.fetch("name")
       @klass_association_map =  options["explore"] || {}
       @compress =               options.fetch("compress",  true)
-      @fetch_from_s3 =          options.fetch("fetch_from_s3", true)
-      @send_to_s3 =             options.fetch("send_to_s3", true)
-      @aws_key_path =           options.fetch("aws_key_path", AWS_KEY_PATH)
-      @s3_bucket =              options.fetch("s3_bucket", S3_BUCKET)
+      @transfer_config =        Transferrer::Config.new(options.fetch("transfer", {}))
       @obfuscations =           parse_obfuscations(options["obfuscations"] || {})
     rescue KeyError => e
       raise ConfigParseError, e
@@ -46,7 +42,7 @@ module Brillo
       "#{app_name}-scrubbed.dmp"
     end
 
-    def remote_filename
+    def compressed_filename
       compress ? "#{dump_filename}.gz" : dump_filename
     end
 
@@ -54,15 +50,15 @@ module Brillo
       app_tmp + dump_filename
     end
 
-    def remote_path
-      app_tmp + remote_filename
+    def compressed_dump_path
+      app_tmp + compressed_filename
     end
 
     def db
       @db_config ||= ActiveRecord::Base.connection.instance_variable_get(:@config).dup
     end
 
-    # TODO support other tranfer systems
+    # TODO support other transfer systems
     def transferrer
       Transferrer::S3.new(self)
     end

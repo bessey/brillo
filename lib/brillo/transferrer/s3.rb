@@ -1,65 +1,58 @@
+require 'aws-sdk'
+
 module Brillo
   module Transferrer
     class S3
       include Helpers::ExecHelper
       include Logger
-      attr_reader :credentials, :bucket, :remote_filename, :remote_path, :download_enabled, :upload_enabled
-      attr_reader :key_path
+      attr_reader :bucket, :filename, :region, :path, :enabled
 
       def initialize(config)
-        @download_enabled = config.fetch_from_s3
-        @upload_enabled   = config.send_to_s3
-        @bucket           = config.s3_bucket
-        @key_path         = config.aws_key_path
-        @remote_filename  = config.remote_filename
-        @remote_path      = config.remote_path
-        load_credentials
+        @enabled              = config.transfer_config.enabled
+        @bucket               = config.transfer_config.bucket
+        @region               = config.transfer_config.region
+        @filename             = config.compressed_filename
+        @path                 = config.compressed_dump_path
+        set_environment
       end
 
       def download
-        return unless download_enabled
-        load_credentials
-        FileUtils.rm [config.dump_path, config.remote_path], force: true
-        aws_s3 "get"
+        return unless enabled
+        FileUtils.rm path, force: true
+        client.get_object({bucket: bucket, key: path.to_s}, target: path)
+      rescue Aws::S3::Errors::NoSuchBucket
+        create_bucket
+        retry
       end
 
       def upload
-        return unless upload_enabled
-        load_credentials
-        aws_s3 "put"
+        return unless enabled
+        object = resource.bucket(bucket).object(path.to_s)
+        object.upload_file(path)
+      rescue Aws::S3::Errors::NoSuchBucket
+        create_bucket
+        retry
       end
 
       private
 
-      def load_credentials
-        if File.exist?(key_path)
-          @credentials = YAML.load_file(key_path)
-        else
-          key = ENV["AWS_SECRET_KEY"] || ENV["EC2_SECRET_KEY"]
-          unless key && key.length > 10
-            raise CredentialsError, "AWS credentials not found. Expected AWS_ACCESS_KEY and AWS_SECRET_KEY to be set!"
-          end
-          @credentials = {
-            'aws_access_key' => ENV["AWS_ACCESS_KEY"] || ENV["EC2_ACCESS_KEY"],
-            'aws_secret_key' => key
-          }
-        end
+      # Backwards compatibility only
+      def set_environment
+        ENV['AWS_SECRET_ACCESS_KEY'] ||= (ENV["AWS_SECRET_KEY"] || ENV["EC2_SECRET_KEY"])
+        ENV['AWS_ACCESS_KEY_ID']     ||= (ENV["AWS_ACCESS_KEY"] || ENV["EC2_ACCESS_KEY"])
+        ENV['AWS_REGION']            ||= region
       end
 
-      def aws_s3 api_command
-        execute!("#{aws_env} #{aws_bin} #{api_command} #{bucket}/#{remote_filename} #{remote_path}")
+      def create_bucket
+        client.create_bucket(bucket: bucket)
       end
 
-      def aws_bin
-        if File.exist?('/usr/local/bin/awstk')
-          '/usr/local/bin/awstk'
-        else
-          '/usr/local/bin/aws'
-        end
+      def client
+        Aws::S3::Client.new
       end
 
-      def aws_env
-        "EC2_ACCESS_KEY=#{credentials['aws_access_key']} EC2_SECRET_KEY=#{credentials['aws_secret_key']}"
+      def resource
+        Aws::S3::Resource.new
       end
     end
   end

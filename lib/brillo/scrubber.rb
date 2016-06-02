@@ -32,7 +32,7 @@ module Brillo
     end
 
     def scrub!
-      FileUtils.rm [config.dump_path, config.remote_path], force: true
+      FileUtils.rm config.compressed_filename, force: true
       configure_polo
       adapter.dump_structure_and_migrations(config)
       explore_all_classes

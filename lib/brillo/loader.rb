@@ -7,7 +7,7 @@ module Brillo
     attr_reader :config
 
     def initialize(config)
-      raise "⚠️ DON'T LOAD IN PRODUCTION! ⚠️" if Rails.env.production?
+      raise "⚠️ DON'T LOAD IN PRODUCTION! ⚠️" if production?
       @config = config
     end
 
@@ -26,7 +26,7 @@ module Brillo
 
     def import_sql
       if config.compress
-        execute!("gunzip -c #{config.remote_path} | #{sql_load_command}")
+        execute!("gunzip -c #{config.compressed_dump_path} | #{sql_load_command}")
       else
         execute!("cat #{config.dump_path} | #{sql_load_command}")
       end
@@ -34,6 +34,10 @@ module Brillo
     end
 
     private
+
+    def production?
+      (ENV['RAILS_ENV'] || ENV['RUBY_ENV']) == 'production'
+    end
 
     def sql_load_command
       config.adapter.load_command

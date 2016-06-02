@@ -63,7 +63,7 @@ obfuscations:         #
   user.email: email
 ```
 
-In order to communicate with S3, Brillo expects `AWS_ACCESS_KEY` and `AWS_SECRET_KEY` to be set in the environment. It uses [Tim Kay's AWS cli](http://timkay.com/aws/) to communicate with AWS.
+Brillo uses [the official aws-sdk](https://github.com/aws/aws-sdk-ruby) to communicate with S3. There [are a number of ways](https://github.com/aws/aws-sdk-ruby#configuration) to pass your S3 credentials, but the simplest is to set `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` in your environment.
 
 ### Loading a database in development
 
@@ -101,5 +101,4 @@ end
 
 ## To Do
 
-- Support S3 transfer via the usual AWS CLI
 - Support alternative transfer mechanisms
