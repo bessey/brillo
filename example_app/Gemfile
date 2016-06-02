@@ -2,8 +2,6 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.2.5.1'
 gem 'mysql2'
-# bundle exec rake doc:rails generates the API under doc/api.
-gem 'sdoc', '~> 0.4.0', group: :doc
 
 gem 'brillo', path: '../'
 gem 'polo', github: 'IFTTT/polo'
