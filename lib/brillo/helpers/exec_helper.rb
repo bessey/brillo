@@ -14,7 +14,7 @@ module Brillo
         if success
           [success, stdout, stderr]
         else
-          raise RuntimeError, stderr
+          raise RuntimeError, "#{stdout} #{stderr}"
         end
       end
 
