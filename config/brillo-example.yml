@@ -6,7 +6,6 @@ name: my-app          # Namespace the scrubbed file will occupy
 #   user.name: name   # Scrub table.field with scrubber (see Brillo::SCRUBBERS for choices)
 transfer:
   # enabled: true     # Disable to skip transferring to and from S3, running purely locally
-  enabled: true
   # bucket: database-scrubs
   # region: us-west-2 # Override to change the region to somewhere nearer you
 explore:

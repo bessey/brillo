@@ -13,7 +13,13 @@ module Brillo
         @region               = config.transfer_config.region
         @filename             = config.compressed_filename
         @path                 = config.compressed_dump_path
-        set_environment
+        Aws.config.update(
+          credentials: Aws::Credentials.new(
+            config.transfer_config.access_key_id,
+            config.transfer_config.secret_access_key
+          ),
+          region:             config.transfer_config.region
+        )
       end
 
       def download
@@ -35,13 +41,6 @@ module Brillo
       end
 
       private
-
-      # Backwards compatibility only
-      def set_environment
-        ENV['AWS_SECRET_ACCESS_KEY'] ||= (ENV["AWS_SECRET_KEY"] || ENV["EC2_SECRET_KEY"])
-        ENV['AWS_ACCESS_KEY_ID']     ||= (ENV["AWS_ACCESS_KEY"] || ENV["EC2_ACCESS_KEY"])
-        ENV['AWS_REGION']            ||= region
-      end
 
       def create_bucket
         client.create_bucket(bucket: bucket)

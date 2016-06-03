@@ -79,7 +79,7 @@ $ rake db:load
 $ cap staging db:load
 ```
 
-### Adding scrub tactics and obfuscations
+## Advanced Configuration
 
 If the built in record selection tactics aren't enough for you, or you need a custom obfuscation strategy, you can add them via the initializer. They are available in the YAML config like any other strategy.
 
@@ -97,6 +97,10 @@ Brillo.configure do |config|
   config.add_obfuscation :phone_with_id, -> (field, instance) {
     (555_000_0000 + instance.id).to_s
   }
+
+  # In addition to setting your S3 credentials via env you can set them something like this
+  config.transfer_config.secret_access_key  = Rails.application.secrets.secret_access_key
+  config.transfer_config.access_key_id      = Rails.application.secrets.access_key_id
 end
 
 ```
