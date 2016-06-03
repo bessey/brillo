@@ -1,6 +1,6 @@
 # Change Log
 
-## Unreleased
+## 1.1.0
 **New**
 - **BREAKING** Brillo used to support loading your credentials from a YAML file at `/etc/ec2_secure_env.yml`
 but no longer does. It is now your responsibility to ensure the credentials are in the environment Brillo
