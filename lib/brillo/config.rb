@@ -65,7 +65,7 @@ module Brillo
       case db[:adapter].to_sym
       when :mysql2
         Adapter::MySQL.new(db)
-      when :postgres
+      when :postgresql
         Adapter::Postgres.new(db)
       else
         raise ConfigParseError, "Unsupported DB adapter #{db[:adapter]}"

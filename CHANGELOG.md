@@ -10,6 +10,9 @@ runs in.
 
 **Fixed**
 - Fix mysql exec when no host specified
+- Fix postgres exec when no host specified
+- Fix postgres adapter reference
+
 
 ## 1.0.0
 First public Brillo version!

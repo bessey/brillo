@@ -2,7 +2,9 @@ module Brillo
   module Adapter
     class Postgres < Base
       def load_command
-        "psql --host #{config[:host]} -U #{config[:username]} #{config[:password] ? "-W#{config[:password]}" : ""} #{config[:database]}"
+        host = config[:host] ? "--host #{config[:host]}" : ""
+        password = config[:password] ? "-W#{config[:password]}" : ""
+        "psql #{host} -U #{config[:username]} #{password} #{config[:database]}"
       end
     end
   end
