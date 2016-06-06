@@ -9,7 +9,7 @@ RSpec.describe Brillo::Config do
       created_at:     default_time
       my_table.test:  name
     YAML
-    config = Brillo::Config.new(config)
+    config = Brillo::Config.new(config.deep_symbolize_keys)
     expect(config.obfuscations).to eq(
       created_at: :default_time,
       "my_table.test" => :name
@@ -25,7 +25,7 @@ RSpec.describe Brillo::Config do
         created_at:     default_time
         my_table.test:  name
       YAML
-      config = Brillo::Config.new(config)
+      config = Brillo::Config.new(config.deep_symbolize_keys)
       expect { config.verify! }.not_to raise_error
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Brillo::Config do
         i_dont_exist:
           tactic: all
       YAML
-      config = Brillo::Config.new(config)
+      config = Brillo::Config.new(config.deep_symbolize_keys)
       expect { config.verify! }.to raise_error(Brillo::ConfigParseError)
     end
 
@@ -47,7 +47,7 @@ RSpec.describe Brillo::Config do
       obfuscations:
         created_at:     i_dont_exist
       YAML
-      config = Brillo::Config.new(config)
+      config = Brillo::Config.new(config.deep_symbolize_keys)
       expect { config.verify! }.to raise_error(Brillo::ConfigParseError)
     end
   end
