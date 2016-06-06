@@ -8,7 +8,7 @@ namespace :db do
     logger.level = ENV["VERBOSE"] ? Logger::DEBUG : Logger::WARN
     begin
       Brillo.scrub!(logger: logger)
-    rescue CredentialsError => e
+    rescue Brillo::CredentialsError => e
       puts e
       exit(1)
     end
@@ -18,7 +18,7 @@ namespace :db do
   task :load => :environment do
     begin
       Brillo.load!
-    rescue CredentialsError => e
+    rescue Brillo::CredentialsError => e
       puts e
       exit(1)
     end

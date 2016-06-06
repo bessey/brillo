@@ -24,6 +24,7 @@ module Brillo
 
       def download
         return unless enabled
+        logger.info("download from s3 #{bucket} #{path}")
         FileUtils.rm path, force: true
         client.get_object({bucket: bucket, key: path.to_s}, target: path)
       rescue Aws::S3::Errors::NoSuchBucket
@@ -33,6 +34,7 @@ module Brillo
 
       def upload
         return unless enabled
+        logger.info("uploading to s3 #{bucket} #{path}")
         object = resource.bucket(bucket).object(path.to_s)
         object.upload_file(path)
       rescue Aws::S3::Errors::NoSuchBucket

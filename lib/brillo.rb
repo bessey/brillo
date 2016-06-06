@@ -1,5 +1,5 @@
 require 'yaml'
-require 'active_support'
+require 'active_support/hash_with_indifferent_access'
 require 'active_support/core_ext/string/inflections'
 require 'active_record'
 require "brillo/version"
@@ -44,7 +44,7 @@ module Brillo
 
   def self.config
     @config ||= begin
-      static_config = YAML.load_file("#{Rails.root.to_s}/config/brillo.yml")
+      static_config = YAML.load_file("#{Rails.root.to_s}/config/brillo.yml").deep_symbolize_keys
       Config.new(static_config)
     end
   end

@@ -8,7 +8,7 @@ GIT
 PATH
   remote: ../
   specs:
-    brillo (1.0.0)
+    brillo (1.1.0)
       activerecord (>= 3.2)
       activesupport (>= 3.2)
       aws-sdk (~> 2.0)

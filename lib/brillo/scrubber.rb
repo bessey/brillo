@@ -46,12 +46,12 @@ module Brillo
         klass_association_map.each do |klass, options|
           begin
             klass = deserialize_class(klass)
-            tactic = deserialize_tactic(options)
+            tactic = deserialize_tactic(klass, options)
           rescue ConfigParseError => e
             logger.error "Error in brillo.yml: #{e.message}"
             next
           end
-          associations = options.fetch("associations", [])
+          associations = options.fetch(:associations, [])
           explore_class(klass, tactic, associations) do |insert|
             sql_file.puts(insert)
           end
@@ -97,13 +97,13 @@ module Brillo
     end
 
     def deserialize_class(klass)
-      klass.camelize.constantize
+      klass.to_s.camelize.constantize
     rescue
-      raise Config::ConfigParseError, "Could not process class '#{klass}'"
+      raise ConfigParseError, "Could not process class '#{klass}'"
     end
 
-    def deserialize_tactic(options)
-      options.fetch("tactic").to_sym
+    def deserialize_tactic(klass, options)
+      options.fetch(:tactic).to_sym
     rescue KeyError
       raise ConfigParseError, "Tactic not specified for class #{klass}"
     end

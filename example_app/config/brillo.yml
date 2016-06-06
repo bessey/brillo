@@ -1,5 +1,6 @@
 name: dummy
-transfer_enabled: false
+transfer:
+  enabled: true
 explore:
   account:            # Name of ActiveRecord class in snake_case
     tactic: all       # Scrubbing tactic to use (see Brillo:TACTICS for choices)

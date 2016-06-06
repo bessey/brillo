@@ -3,11 +3,11 @@ module Brillo
     attr_reader :app_name, :compress, :obfuscations, :klass_association_map, :db, :transfer_config
 
     def initialize(options = {})
-      @app_name =               options.fetch("name")
-      @klass_association_map =  options["explore"] || {}
-      @compress =               options.fetch("compress",  true)
-      @transfer_config =        Transferrer::Config.new(options.fetch("transfer", {}))
-      @obfuscations =           parse_obfuscations(options["obfuscations"] || {})
+      @app_name =               options.fetch(:name)
+      @klass_association_map =  options[:explore] || {}
+      @compress =               options.fetch(:compress,  true)
+      @transfer_config =        Transferrer::Config.new(**options.fetch(:transfer, {}))
+      @obfuscations =           parse_obfuscations(options[:obfuscations] || {})
     rescue KeyError => e
       raise ConfigParseError, e
     end
@@ -18,7 +18,7 @@ module Brillo
         raise ConfigParseError, "Scrub strategy '#{strategy}' not found, but required by '#{field}'"
       end
       @klass_association_map.each do |klass, _|
-        next if klass.camelize.safe_constantize
+        next if klass.to_s.camelize.safe_constantize
         raise ConfigParseError, "Class #{klass} not found"
       end
       self
@@ -73,13 +73,13 @@ module Brillo
     end
 
     # Convert generic cross table obfuscations to symbols so Polo parses them correctly
-    # "my_table.field" => "my_table.field"
-    # "my_field"       => :my_field
+    # :"my_table.field" => "my_table.field"
+    # :my_field         => :my_field
     def parse_obfuscations(obfuscations)
       obfuscations.each_pair.with_object({}) do |field_and_strategy, hash|
         field, strategy = field_and_strategy
         strategy = strategy.to_sym
-        field.match(/\./) ? hash[field] = strategy : hash[field.to_sym] = strategy
+        field.to_s.match(/\./) ? hash[field.to_s] = strategy : hash[field] = strategy
       end
     end
   end
