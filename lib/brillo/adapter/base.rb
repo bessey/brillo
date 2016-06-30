@@ -13,6 +13,10 @@ module Brillo
         ""
       end
 
+      def table_footer(klass)
+        ""
+      end
+
       def dump_structure_and_migrations(config)
         # Overrides the path the structure is dumped to in Rails >= 3.2
         ENV['SCHEMA'] = ENV['DB_STRUCTURE'] = config.dump_path.to_s

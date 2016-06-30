@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.1.1
+Fixed postgres sequence not being set to MAX(id).
+
 ## 1.1.0
 **New**
 - **BREAKING** Brillo used to support loading your credentials from a YAML file at `/etc/ec2_secure_env.yml`

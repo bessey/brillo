@@ -56,6 +56,9 @@ module Brillo
             sql_file.puts(insert)
           end
         end
+        ActiveRecord::Base.descendants.each do |klass|
+          sql_file.puts(adapter.table_footer(klass))
+        end
         sql_file.puts(adapter.footer)
       end
     end
