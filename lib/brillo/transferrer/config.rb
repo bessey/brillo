@@ -2,7 +2,7 @@ module Brillo
   module Transferrer
     class Config
       attr_accessor :bucket, :region, :enabled, :secret_access_key, :access_key_id
-      def initialize(bucket: 'database-scrubs', region: nil, enabled: true)
+      def initialize(bucket: 'database-scrubs', region: 'us-west-2', enabled: true)
         @enabled = enabled
         @bucket = bucket
         @region = region

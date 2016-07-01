@@ -61,10 +61,6 @@ obfuscations:         #
   user.name: name     # Scrub user.name with the "name" scrubber (see Brillo::SCRUBBERS for choices)
   user.phone: phone
   user.email: email
-transfer:
-  enabled: true     # Disable to skip transferring to and from S3, running purely locally
-  bucket: database-scrubs
-  # region: us-west-2 # Override to change the region to somewhere nearer you
 ```
 
 Brillo uses [the official aws-sdk](https://github.com/aws/aws-sdk-ruby) to communicate with S3. There [are a number of ways](https://github.com/aws/aws-sdk-ruby#configuration) to pass your S3 credentials, but the simplest is to set `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` in your environment.
