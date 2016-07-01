@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.1.2
+Set us-east-1 as the default region, because this is S3s default and can be accessed from other regions.
+
 ## 1.1.1
 Fixed postgres sequence not being set to MAX(id).
 
