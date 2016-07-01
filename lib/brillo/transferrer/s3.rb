@@ -17,9 +17,9 @@ module Brillo
           credentials: Aws::Credentials.new(
             config.transfer_config.access_key_id,
             config.transfer_config.secret_access_key
-          ),
-          region:             config.transfer_config.region
+          )
         )
+        Aws.config.update(region: region) if region
       end
 
       def download
