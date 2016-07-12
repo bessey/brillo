@@ -4,7 +4,7 @@ module Brillo
       def load_command
         host = config[:host] ? "--host #{config[:host]}" : ""
         password = config[:password] ? "PGPASSWORD=#{config[:password]} " : ""
-        "#{password}psql #{host} -U #{config[:username]} #{password} #{config[:database]}"
+        "#{password}psql #{host} -U #{config[:username]} #{config[:database]}"
       end
 
       # pgdump without schema does not set sequences, so we have to do it ourselves, or the first insert
