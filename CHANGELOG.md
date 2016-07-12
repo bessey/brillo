@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.1.4
+Fix loading a postgres database with a password set.
+
 ## 1.1.3
 Fix bug in S3 upload path. Files were previously uploading to their local system path in S3. I.e. `bucket-name/my/rails/app/tmp/my-app-scrubbed.dmp.gz`.
 

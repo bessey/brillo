@@ -1,3 +1,3 @@
 module Brillo
-  VERSION = "1.1.4.pre2"
+  VERSION = "1.1.4"
 end
