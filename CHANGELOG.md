@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.2.0
+Support S3 config [via your environment](https://github.com/aws/aws-sdk-ruby#configuration). To configure via the environment, just leave your `Brillo.config.transfer_config.{access_key_id,secret_access_key}` blank.
+
 ## 1.1.4
 Fix loading a postgres database with a password set.
 
