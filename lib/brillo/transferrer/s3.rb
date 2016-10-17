@@ -44,7 +44,7 @@ module Brillo
         }.tap do |hash|
           # Don't explicitly set credentials if we have none
           # Doing so stops [automatic configuration](https://github.com/aws/aws-sdk-ruby#configuration)
-          return unless transfer_config.access_key_id
+          next unless transfer_config.access_key_id
           hash[:credentials] = Aws::Credentials.new(
             transfer_config.access_key_id,
             transfer_config.secret_access_key
