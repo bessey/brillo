@@ -13,13 +13,7 @@ module Brillo
         @region               = config.transfer_config.region
         @filename             = config.compressed_filename
         @path                 = config.compressed_dump_path
-        Aws.config.update(
-          credentials: Aws::Credentials.new(
-            config.transfer_config.access_key_id,
-            config.transfer_config.secret_access_key
-          ),
-          region:             config.transfer_config.region
-        )
+        Aws.config.update(aws_config(config.transfer_config))
       end
 
       def download
@@ -43,6 +37,20 @@ module Brillo
       end
 
       private
+
+      def aws_config(transfer_config)
+        {
+          region: transfer_config.region
+        }.tap do |hash|
+          # Don't explicitly set credentials if we have none
+          # Doing so stops [automatic configuration](https://github.com/aws/aws-sdk-ruby#configuration)
+          return unless transfer_config.access_key_id
+          hash[:credentials] = Aws::Credentials.new(
+            transfer_config.access_key_id,
+            transfer_config.secret_access_key
+          )
+        end
+      end
 
       def create_bucket
         client.create_bucket(bucket: bucket)
