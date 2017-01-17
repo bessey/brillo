@@ -25,11 +25,6 @@ require 'polo'
 module Brillo
   def self.configure
     yield config
-    begin
-      config.verify!
-    rescue ConfigParseError => e
-      puts "Brillo config contains errors: #{e}"
-    end
   end
 
   def self.scrub!(logger: ::Logger.new(STDOUT))
