@@ -16,6 +16,21 @@ module Brillo
           FROM #{table_name};
         SQL
       end
+
+      def recreate_db
+        logger.info "Dropping all connections to #{config[:database]}"
+        ActiveRecord::Base.connection.execute(
+          <<-SQL
+          -- Disconnect all others from the database we are about to drop.
+          -- Without this, the drop will fail and so the load will abort.
+          SELECT pg_terminate_backend(pg_stat_activity.pid)
+          FROM pg_stat_activity
+          WHERE pg_stat_activity.datname = '#{config[:database]}'
+            AND pid <> pg_backend_pid();
+          SQL
+        )
+        super
+      end
     end
   end
 end

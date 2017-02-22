@@ -1,5 +1,10 @@
 # Change Log
 
+## 1.3.0
+Remove Caring specific scrubber code
+
+Fix Postgres load failing because of existing connection
+
 ## 1.2.2
 Fixed initializer. `Brillo.configure` pre-initialization will now work.
 

@@ -1,6 +1,8 @@
 module Brillo
   module Adapter
     class Base
+      include Logger
+
       attr_reader :config
       def initialize(db_config)
         @config = db_config
@@ -25,6 +27,13 @@ module Brillo
 
       def load_command
         raise NotImplementedError
+      end
+
+      def recreate_db
+        ["db:drop", "db:create"].each do |t|
+          logger.info "Running\n\trake #{t}"
+          Rake::Task[t].invoke
+        end
       end
     end
   end

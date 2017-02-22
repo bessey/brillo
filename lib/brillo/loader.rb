@@ -18,10 +18,7 @@ module Brillo
     end
 
     def recreate_db
-      ["db:drop", "db:create"].each do |t|
-        logger.info "Running\n\trake #{t}"
-        Rake::Task[t].invoke
-      end
+      config.adapter.recreate_db
     end
 
     def import_sql
