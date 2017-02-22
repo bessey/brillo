@@ -10,9 +10,10 @@ module Brillo
     # Define some procs as scrubbing strategies for Polo
     SCRUBBERS = {
       default_time: ->(t) { t.nil? ? Time.now.to_s(:sql) : t },
-      email:        ->(e) { e.match(/@caring.com/) ? e : Digest::MD5.hexdigest(e) + "@example.com".freeze },
+      email:        ->(e) { Digest::MD5.hexdigest(e) + "@example.com".freeze },
       jumble:       ->(j) { j.downcase.chars.shuffle!(random: JUMBLE_PRNG.clone).join },
-      phone:        ->(n) { n = n.split(' ').first; n && n.length > 9 ? n[0..-5] + n[-1] + n[-2] + n[-3] + n[-4] : n},   # strips extensions
+      # strips extensions
+      phone:        ->(n) { n = n.split(' ').first; n && n.length > 9 ? n[0..-5] + n[-1] + n[-2] + n[-3] + n[-4] : n},
       name:         ->(n) { n.downcase.split(' ').map do |word|
           word.chars.shuffle!(random: JUMBLE_PRNG.clone).join
         end.each(&:capitalize!).join(' ')
