@@ -1,5 +1,8 @@
 # Change Log
 
+## 1.3.1
+Disable query cacheing to reduce memory growth over time.
+
 ## 1.3.0
 Remove Caring specific scrubber code
 
