@@ -1,5 +1,3 @@
 source 'https://rubygems.org'
 
 gemspec path: '../', development_group: :test
-
-gem 'polo', github: 'IFTTT/polo'

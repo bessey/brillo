@@ -15,7 +15,6 @@ RSpec.describe "brillo.rake" do
       `rake db:scrub`
       `gunzip -f #{Rails.root.join "tmp/dummy-scrubbed.dmp.gz"}`
       output = File.read("tmp/dummy-scrubbed.dmp")
-      expect(output).to include "mbessey@caring.com"
       expect(output).not_to include "mbessey@gmail.com"
       expect(output).not_to include "Matthew Bessey"
       expect(output).not_to include "555-413-5234"
