@@ -15,8 +15,6 @@ Add this line to your application's Gemfile:
 
 ```ruby
 gem 'brillo'
-# We currently rely on an unreleased version of Polo
-gem 'polo',   github: 'IFTTT/polo'
 ```
 
 Generate a starter `brillo.yml` file and `config/initializers/brillo.rb` with
