@@ -21,8 +21,8 @@ module Brillo
     }
 
     TACTICS = {
-      latest: -> (klass) { klass.order('id desc').limit(LATEST_LIMIT).pluck(:id) },
-      all:    -> (klass) { klass.pluck(:id) }
+      latest: -> (klass) { klass.order("#{klass.primary_key} desc").limit(LATEST_LIMIT).pluck(klass.primary_key) },
+      all:    -> (klass) { klass.pluck(klass.primary_key) }
     }
 
     attr_reader :config, :adapter, :transferrer
