@@ -1,7 +1,17 @@
 language: ruby
+
 rvm:
   - 2.3.1
+  - 2.5.1
+
+gemfile:
+  - gemfiles/rails_4.2.gemfile
+  - gemfiles/rails_5.0.gemfile
+  - gemfiles/rails_5.1.gemfile
+  - gemfiles/rails_5.2.gemfile
+
 cache: bundler
+
 services:
   - mysql
 
