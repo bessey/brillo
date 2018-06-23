@@ -26,8 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activesupport", ">= 3.2"
 
   spec.add_development_dependency "appraisal"
-  spec.add_development_dependency "mysql2"
-  spec.add_development_dependency "rspec-rails", "~> 3.4"
+  spec.add_development_dependency "rspec-rails", "~> 3.7"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "benchmark-ips"
 end
