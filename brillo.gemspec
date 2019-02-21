@@ -18,16 +18,15 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "rake", "~> 10.0"
+  spec.add_dependency "rake"
   spec.add_dependency "capistrano", "~> 3.0"
   spec.add_dependency "polo", "~> 0.4"
   spec.add_dependency "aws-sdk", "~> 2.0"
   spec.add_dependency "activerecord",  ">= 3.2"
   spec.add_dependency "activesupport", ">= 3.2"
 
-  spec.add_development_dependency "rails", "4.2.5.1"
-  spec.add_development_dependency "mysql2"
-  spec.add_development_dependency "rspec-rails", "~> 3.4"
+  spec.add_development_dependency "appraisal"
+  spec.add_development_dependency "rspec-rails", "~> 3.7"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "benchmark-ips"
 end
