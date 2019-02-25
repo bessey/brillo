@@ -1,5 +1,12 @@
 # Change Log
 
+## 2.0.0.rc1
+Upgrade to AWS SDK 3.0, reduce dependence to S3 specifically.
+
+Support ERB in brillo.yaml
+
+Support alternative primary keys to "id"
+
 ## 1.3.1
 Disable query cacheing to reduce memory growth over time.
 
