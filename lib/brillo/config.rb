@@ -53,7 +53,7 @@ module Brillo
     end
 
     def db
-      @db_config ||= ActiveRecord::Base.connection.instance_variable_get(:@config).dup
+      @db_config ||= Rails.configuration.database_configuration[Rails.env].dup
     end
 
     # TODO support other transfer systems
@@ -62,13 +62,13 @@ module Brillo
     end
 
     def adapter
-      case db[:adapter].to_sym
+      case db["adapter"].to_sym
       when :mysql2
         Adapter::MySQL.new(db)
       when :postgresql
         Adapter::Postgres.new(db)
       else
-        raise ConfigParseError, "Unsupported DB adapter #{db[:adapter]}"
+        raise ConfigParseError, "Unsupported DB adapter #{db["adapter"]}"
       end
     end
 

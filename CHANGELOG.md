@@ -7,6 +7,8 @@ Support ERB in brillo.yaml
 
 Support alternative primary keys to "id"
 
+Fix bug where Brillo breaks when using the Octopus gem
+
 ## 1.3.1
 Disable query cacheing to reduce memory growth over time.
 
