@@ -18,7 +18,7 @@ RSpec.describe Brillo::Dumper::MysqlDumper do
   end
 
   it "raises a RuntimeError on unsuccessful dump" do
-    config.db[:password] = "hfs6sd!@#%f467s7"
+    config.db["password"] = "hfs6sd!@#%f467s7"
     dumper = subject.new(config)
     expect{dumper.dump[0]}.to raise_error(RuntimeError)
   end

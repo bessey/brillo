@@ -93,7 +93,7 @@ module Brillo
 
     def configure_polo
       obfs = obfuscations
-      adapter = config.db[:adapter]
+      adapter = config.db["adapter"]
       Polo.configure do
         obfuscate obfs
         if adapter == "mysql2"

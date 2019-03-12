@@ -13,11 +13,11 @@ module Brillo
         execute!(
           "mysqldump",
           host_arg,
-          "-u #{db[:username]}",
+          "-u #{db["username"]}",
           password_arg,
           "--no-data",
           "--single-transaction", # InnoDB only. Prevent MySQL locking the whole database during dump.
-          "#{db[:database]}",
+          "#{db["database"]}",
           "> #{config.dump_path}"
         )
       end
@@ -25,7 +25,7 @@ module Brillo
       private
 
       def password_arg
-        if password = config.db[:password].presence
+        if password = config.db["password"].presence
           "--password=#{password}"
         else
           ""
@@ -33,7 +33,7 @@ module Brillo
       end
 
       def host_arg
-        if (host = config.db[:host].presence) && host != 'localhost'
+        if (host = config.db["host"].presence) && host != 'localhost'
           "-h #{host}"
         else
           ""
