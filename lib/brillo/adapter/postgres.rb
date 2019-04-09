@@ -2,9 +2,9 @@ module Brillo
   module Adapter
     class Postgres < Base
       def load_command
-        host = config[:host] ? "--host #{config[:host]}" : ""
-        password = config[:password] ? "PGPASSWORD=#{config[:password]} " : ""
-        "#{password}psql #{host} -U #{config[:username]} #{config[:database]}"
+        host = config["host"] ? "--host #{config["host"]}" : ""
+        password = config["password"] ? "PGPASSWORD=#{config["password"]} " : ""
+        "#{password}psql #{host} -U #{config.fetch("username")} #{config.fetch("database")}"
       end
 
       # pgdump without schema does not set sequences, so we have to do it ourselves, or the first insert

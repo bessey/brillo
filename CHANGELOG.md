@@ -1,6 +1,6 @@
 # Change Log
 
-## 2.0.0.rc1
+## 2.0.0 (Unreleased)
 Upgrade to AWS SDK 3.0, reduce dependence to S3 specifically.
 
 Support ERB in brillo.yaml
