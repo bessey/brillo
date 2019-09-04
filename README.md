@@ -65,6 +65,11 @@ Brillo uses [the official aws-sdk](https://github.com/aws/aws-sdk-ruby) to commu
 
 If you'd like to see the gem in use, check out the  [/example_app](https://github.com/bessey/brillo/tree/master/example_app) directory.
 
+### Creating a scrubbed copy of the database in production
+```bash
+$ rake db:scrub
+```
+
 ### Loading a database in development
 
 ```bash
