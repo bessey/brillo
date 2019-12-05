@@ -43,6 +43,7 @@ Here's an example `brillo.yml` for IMDB:
 
 ```yaml
 name: imdb            # Namespace the scrubbed file will occupy in S3
+compress: true
 explore:
   user:               # Name of ActiveRecord class in snake_case
     tactic: all       # Scrubbing tactic to use (see Brillo:TACTICS for choices)

@@ -1,6 +1,7 @@
 name: my-app          # Namespace the scrubbed file will occupy
 ## Optional configuration (with defaults shown)
 # compress: true      # Enables gzip on scrub and ungzip on load
+# recreate_db: true   # Dump structures and migrations on scrub and recreated database on load
 #
 # obfuscations:
 #   user.name: name   # Scrub table.field with scrubber (see Brillo::SCRUBBERS for choices)

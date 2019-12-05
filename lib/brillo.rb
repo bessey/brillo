@@ -32,9 +32,9 @@ module Brillo
     Scrubber.new(config).scrub!
   end
 
-  def self.load!(logger: ::Logger.new(STDOUT))
+  def self.load!(keep_local: false, logger: ::Logger.new(STDOUT))
     Brillo::Logger.logger = logger
-    Loader.new(config).load!
+    Loader.new(config).load! keep_local
   end
 
   def self.config

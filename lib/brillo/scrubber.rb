@@ -35,10 +35,15 @@ module Brillo
     def scrub!
       FileUtils.rm config.compressed_filename, force: true
       configure_polo
-      adapter.dump_structure_and_migrations(config)
+      dump_structure_and_migrations
       explore_all_classes
       compress
       config.transferrer.upload
+    end
+
+    def dump_structure_and_migrations
+      return unless config.recreate_db
+      adapter.dump_structure_and_migrations(config)
     end
 
     def explore_all_classes
