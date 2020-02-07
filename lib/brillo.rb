@@ -29,17 +29,15 @@ module Brillo
 
   def self.scrub!(logger: ::Logger.new(STDOUT), filename: nil)
     Brillo::Logger.logger = logger
-		c = config do |configuration|
-			configuration.app_name = filename if filename
-		end
-    Scrubber.new(c).scrub!
+		configuration = config
+		configuration.app_name = filename if filename
+    Scrubber.new(configuration).scrub!
   end
 
   def self.load!(keep_local: false, logger: ::Logger.new(STDOUT), filename: nil)
     Brillo::Logger.logger = logger
-		c = config do |configuration|
-			configuration.app_name = filename if filename
-		end
+		configuration = config
+		configuration.app_name = filename if filename
     Loader.new(c).load! keep_local
   end
 
