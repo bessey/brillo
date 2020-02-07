@@ -27,20 +27,28 @@ module Brillo
     yield config
   end
 
-  def self.scrub!(logger: ::Logger.new(STDOUT))
+  def self.scrub!(logger: ::Logger.new(STDOUT), filename: nil)
     Brillo::Logger.logger = logger
-    Scrubber.new(config).scrub!
+		c = config do |configuration|
+			configuration.app_name = filename if filename
+		end
+    Scrubber.new(c).scrub!
   end
 
-  def self.load!(keep_local: false, logger: ::Logger.new(STDOUT))
+  def self.load!(keep_local: false, logger: ::Logger.new(STDOUT), filename: nil)
     Brillo::Logger.logger = logger
-    Loader.new(config).load! keep_local
+		c = config do |configuration|
+			configuration.app_name = filename if filename
+		end
+    Loader.new(c).load! keep_local
   end
 
   def self.config
     @config ||= begin
       static_config = YAML.load(ERB.new(File.read("#{Rails.root.to_s}/config/brillo.yml")).result).deep_symbolize_keys
-      Config.new(static_config)
+      c = Config.new(static_config)
+			yield c if block_given?
+			c
     end
   end
 

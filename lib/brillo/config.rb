@@ -1,6 +1,6 @@
 module Brillo
   class Config
-    attr_reader :app_name, :compress, :obfuscations, :klass_association_map, :db, :transfer_config, :recreate_db
+    attr_accessor :app_name, :compress, :obfuscations, :klass_association_map, :db, :transfer_config, :recreate_db
 
     def initialize(options = {})
       @app_name =               options.fetch(:name)
