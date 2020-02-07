@@ -38,7 +38,7 @@ module Brillo
     Brillo::Logger.logger = logger
 		configuration = config
 		configuration.app_name = filename if filename
-    Loader.new(c).load! keep_local
+    Loader.new(configuration).load! keep_local
   end
 
   def self.config
