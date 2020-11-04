@@ -28,19 +28,17 @@ module Brillo
       private
 
       def password_arg
-        if password = config.db['password'].presence
-          "--password=#{password}"
-        else
-          ''
-        end
+        password = config.db['password'].presence
+        return '' if password.blank?
+
+        "--password=#{password}"
       end
 
       def host_arg
-        if (host = config.db['host'].presence) && host != 'localhost'
-          "-h #{host}"
-        else
-          ''
-        end
+        host = config.db['host'].presence
+        return '' if host.blank? || host == 'localhost'
+
+        "-h #{host}"
       end
     end
   end

@@ -2,7 +2,7 @@
 
 module Brillo
   class Config
-    attr_reader :app_name, :compress, :obfuscations, :klass_association_map, :db, :transfer_config
+    attr_reader :app_name, :compress, :obfuscations, :klass_association_map, :transfer_config
 
     def initialize(options = {})
       @app_name =               options.fetch(:name)
@@ -57,7 +57,7 @@ module Brillo
     end
 
     def db
-      @db_config ||= Rails.configuration.database_configuration[Rails.env].dup
+      @db ||= Rails.configuration.database_configuration[Rails.env].dup
     end
 
     # TODO: support other transfer systems

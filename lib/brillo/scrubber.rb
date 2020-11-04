@@ -15,7 +15,10 @@ module Brillo
       email: ->(e) { "#{Digest::MD5.hexdigest(e)}@example.com" },
       jumble: ->(j) { j.downcase.chars.shuffle!(random: JUMBLE_PRNG.clone).join },
       # strips extensions
-      phone: ->(n) { n = n.split(' ').first; n && n.length > 9 ? n[0..-5] + n[-1] + n[-2] + n[-3] + n[-4] : n },
+      phone: lambda { |n|
+        n = n.split(' ').first
+        n && n.length > 9 ? n[0..-5] + n[-1] + n[-2] + n[-3] + n[-4] : n
+      },
       name: lambda { |n|
         n.downcase.split(' ').map do |word|
           word.chars.shuffle!(random: JUMBLE_PRNG.clone).join

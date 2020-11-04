@@ -9,7 +9,22 @@ AllCops:
     - gemfiles/*
     - example_app/**/*
 
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*
+
 ## TODOs
+
+Metrics/AbcSize:
+  Exclude:
+    - lib/brillo/scrubber.rb
+
+Metrics/MethodLength:
+  Exclude:
+    - lib/brillo/adapter/postgres.rb
+    - lib/brillo/dumper/mysql_dumper.rb
+    - lib/brillo/scrubber.rb
+    - lib/brillo/validator.rb
 
 Style/Documentation:
   Enabled: false

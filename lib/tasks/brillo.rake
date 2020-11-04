@@ -6,7 +6,6 @@ namespace :db do
   desc 'Upload a scrubbed copy of the database as specified by config/scrub.yml to S3'
   task scrub: :environment do
     logger = ENV['VERBOSE'] ? Logger.new($stdout) : Rails.logger
-    logger = Logger.new($stdout)
     logger.level = ENV['VERBOSE'] ? Logger::DEBUG : Logger::WARN
     begin
       Brillo.scrub!(logger: logger)
