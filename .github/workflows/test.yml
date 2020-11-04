@@ -1,0 +1,39 @@
+name: Test
+
+on:
+  push:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: [2.6, 2.7]
+        gemfile: [rails-5.1-stable, rails-5.2-stable, rails-6.0-stable]
+        experimental: [false]
+        include:
+          - ruby: head
+            gemfile: [rails-5.1-stable, rails-5.2-stable, rails-6.0-stable, rails-edge]
+            experimental: true
+          - ruby: [2.6, 2.7]
+            gemfile: [rails-edge]
+            experimental: true
+    continue-on-error: ${{ matrix.experimental }}
+    env:
+      BUNDLE_PATH: ${{ github.workspace }}/vendor/bundle
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+    - uses: actions/cache@v2
+      with:
+        path: vendor/bundle
+        key: ${{ matrix.ruby }}-gems-${{ hashFiles(env.BUNDLE_GEMFILE) }}
+        restore-keys: |
+           ${{ matrix.ruby }}-gems-
+    - name: Install dependencies
+      run: bundle install
+    - name: Run tests
+      run: bundle exec rspec
