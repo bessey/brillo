@@ -12,10 +12,22 @@ jobs:
         experimental: [false]
         include:
           - ruby: head
-            gemfile: [rails_5.1_stable, rails_5.2_stable, rails_6.0_stable, rails_edge]
+            gemfile: rails_5.1_stable
             experimental: true
-          - ruby: [2.6, 2.7]
-            gemfile: [rails_edge]
+          - ruby: head
+            gemfile: rails_5.2_stable
+            experimental: true
+          - ruby: head
+            gemfile: rails_6.0_stable
+            experimental: true
+          - ruby: head
+            gemfile: rails_edge
+            experimental: true
+          - ruby: 2.6
+            gemfile: rails_edge
+            experimental: true
+          - ruby: 2.7
+            gemfile: rails_edge
             experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:
