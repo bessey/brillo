@@ -8,19 +8,19 @@ jobs:
     strategy:
       matrix:
         ruby: [2.6, 2.7]
-        gemfile: [rails-5.1-stable, rails-5.2-stable, rails-6.0-stable]
+        gemfile: [rails_5.1_stable, rails_5.2_stable, rails_6.0_stable]
         experimental: [false]
         include:
           - ruby: head
-            gemfile: [rails-5.1-stable, rails-5.2-stable, rails-6.0-stable, rails-edge]
+            gemfile: [rails_5.1_stable, rails_5.2_stable, rails_6.0_stable, rails_edge]
             experimental: true
           - ruby: [2.6, 2.7]
-            gemfile: [rails-edge]
+            gemfile: [rails_edge]
             experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:
       BUNDLE_PATH: ${{ github.workspace }}/vendor/bundle
-      BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
