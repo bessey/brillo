@@ -20,24 +20,27 @@ RSpec.describe(Brillo::Scrubber) do
     end
   end
 
-  # describe "performance characteristics" do
-  #   it "performs well" do
-  #     Benchmark.ips do |x|
-  #       x.report "phone" do
-  #         Brillo::SCRUBBERS[:phone].call(number)
-  #       end
-  #       x.report "email" do
-  #         Brillo::SCRUBBERS[:email].call(email)
-  #       end
-  #       Brillo::SCRUBBERS[:name].call(name)
-  #       x.report "name" do
-  #         Brillo::SCRUBBERS[:name].call(name)
-  #       end
-  #       x.report "jumble" do
-  #         Brillo::SCRUBBERS[:jumble].call(name)
-  #       end
-  #       x.compare!
-  #     end
-  #   end
-  # end
+  describe 'performance characteristics', perf: true do
+    it 'performs well' do
+      Benchmark.ips do |x|
+        x.report('phone') do
+          Brillo::Scrubber::SCRUBBERS[:phone].call(number)
+        end
+
+        x.report('email') do
+          Brillo::Scrubber::SCRUBBERS[:email].call(email)
+        end
+
+        x.report('name') do
+          Brillo::Scrubber::SCRUBBERS[:name].call(name)
+        end
+
+        x.report('jumble') do
+          Brillo::Scrubber::SCRUBBERS[:jumble].call(name)
+        end
+
+        x.compare!
+      end
+    end
+  end
 end
