@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Brillo
   # Responsible for fetching an existing SQL scrub from S3, cleaning the database,
   # and loading the SQL.
@@ -8,6 +10,7 @@ module Brillo
 
     def initialize(config)
       raise "⚠️ DON'T LOAD IN PRODUCTION! ⚠️" if production?
+
       @config = config
     end
 
@@ -27,7 +30,7 @@ module Brillo
       else
         execute!("cat #{config.dump_path} | #{sql_load_command}")
       end
-      logger.info "Import complete!"
+      logger.info('Import complete!')
     end
 
     private

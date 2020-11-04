@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'yaml'
 require 'active_support/hash_with_indifferent_access'
 require 'active_support/core_ext/string/inflections'
 require 'active_record'
-require "brillo/version"
+require 'brillo/version'
 
 require 'brillo/errors'
 require 'brillo/helpers/exec_helper'
@@ -27,19 +29,19 @@ module Brillo
     yield config
   end
 
-  def self.scrub!(logger: ::Logger.new(STDOUT))
+  def self.scrub!(logger: ::Logger.new($stdout))
     Brillo::Logger.logger = logger
     Scrubber.new(config).scrub!
   end
 
-  def self.load!(logger: ::Logger.new(STDOUT))
+  def self.load!(logger: ::Logger.new($stdout))
     Brillo::Logger.logger = logger
     Loader.new(config).load!
   end
 
   def self.config
     @config ||= begin
-      static_config = YAML.load(ERB.new(File.read("#{Rails.root.to_s}/config/brillo.yml")).result).deep_symbolize_keys
+      static_config = YAML.safe_load(ERB.new(File.read("#{Rails.root}/config/brillo.yml")).result).deep_symbolize_keys
       Config.new(static_config)
     end
   end

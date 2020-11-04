@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Brillo
   class Config
     attr_reader :app_name, :compress, :obfuscations, :klass_association_map, :db, :transfer_config
@@ -5,7 +7,7 @@ module Brillo
     def initialize(options = {})
       @app_name =               options.fetch(:name)
       @klass_association_map =  options[:explore] || {}
-      @compress =               options.fetch(:compress,  true)
+      @compress =               options.fetch(:compress, true)
       @transfer_config =        Transferrer::Config.new(**options.fetch(:transfer, {}))
       @obfuscations =           parse_obfuscations(options[:obfuscations] || {})
     rescue KeyError => e
@@ -15,10 +17,12 @@ module Brillo
     def verify!
       @obfuscations.each do |field, strategy|
         next if Scrubber::SCRUBBERS[strategy]
+
         raise ConfigParseError, "Scrub strategy '#{strategy}' not found, but required by '#{field}'"
       end
       @klass_association_map.each do |klass, _|
         next if klass.to_s.camelize.safe_constantize
+
         raise ConfigParseError, "Class #{klass} not found"
       end
       self
@@ -33,7 +37,7 @@ module Brillo
     end
 
     def app_tmp
-      Rails.root.join "tmp"
+      Rails.root.join('tmp')
     end
 
     def dump_filename
@@ -56,19 +60,19 @@ module Brillo
       @db_config ||= Rails.configuration.database_configuration[Rails.env].dup
     end
 
-    # TODO support other transfer systems
+    # TODO: support other transfer systems
     def transferrer
       Transferrer::S3.new(self)
     end
 
     def adapter
-      case db["adapter"].to_sym
+      case db['adapter'].to_sym
       when :mysql2
         Adapter::MySQL.new(db)
       when :postgresql
         Adapter::Postgres.new(db)
       else
-        raise ConfigParseError, "Unsupported DB adapter #{db["adapter"]}"
+        raise ConfigParseError, "Unsupported DB adapter #{db['adapter']}"
       end
     end
 

@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Brillo
   module Logger
-    def self.logger= logger
+    def self.logger=(logger)
       @logger = logger
     end
 

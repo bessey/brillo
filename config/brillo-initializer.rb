@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Brillo.configure do |config|
   ## Add extra tactics for selecting records as you need them
   # config.add_tactic :oldest, -> (klass) { klass.order(created_at: :desc).limit(1000) }

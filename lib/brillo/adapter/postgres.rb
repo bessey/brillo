@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 module Brillo
   module Adapter
     class Postgres < Base
       def load_command
-        host = config["host"] ? "--host #{config["host"]}" : ""
-        password = config["password"] ? "PGPASSWORD=#{config["password"]} " : ""
-        "#{password}psql #{host} -U #{config.fetch("username")} #{config.fetch("database")}"
+        host = config['host'] ? "--host #{config['host']}" : ''
+        password = config['password'] ? "PGPASSWORD=#{config['password']} " : ''
+        "#{password}psql #{host} -U #{config.fetch('username')} #{config.fetch('database')}"
       end
 
       # pgdump without schema does not set sequences, so we have to do it ourselves, or the first insert
@@ -18,7 +20,7 @@ module Brillo
       end
 
       def recreate_db
-        logger.info "Dropping all connections to #{config[:database]}"
+        logger.info("Dropping all connections to #{config[:database]}")
         ActiveRecord::Base.connection.execute(
           <<-SQL
           -- Disconnect all others from the database we are about to drop.

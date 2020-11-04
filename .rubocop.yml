@@ -1,0 +1,15 @@
+inherit_gem:
+  rubocop-shopify: rubocop.yml
+
+AllCops:
+  DisabledByDefault: false
+  TargetRubyVersion: 2.6
+  NewCops: enable
+  Exclude:
+    - gemfiles/*
+    - example_app/**/*
+
+## TODOs
+
+Style/Documentation:
+  Enabled: false

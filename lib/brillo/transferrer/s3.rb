@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'aws-sdk-s3'
 
 module Brillo
@@ -18,9 +20,10 @@ module Brillo
 
       def download
         return unless enabled
+
         logger.info("download #{path} from s3 #{bucket} #{filename}")
-        FileUtils.rm path, force: true
-        client.get_object({bucket: bucket, key: filename}, target: path)
+        FileUtils.rm(path, force: true)
+        client.get_object({ bucket: bucket, key: filename }, target: path)
       rescue Aws::S3::Errors::NoSuchBucket
         create_bucket
         retry
@@ -28,6 +31,7 @@ module Brillo
 
       def upload
         return unless enabled
+
         logger.info("uploading #{path} to s3 #{bucket} #{filename}")
         object = resource.bucket(bucket).object(filename)
         object.upload_file(path)
@@ -40,11 +44,12 @@ module Brillo
 
       def aws_config(transfer_config)
         {
-          region: transfer_config.region
+          region: transfer_config.region,
         }.tap do |hash|
           # Don't explicitly set credentials if we have none
           # Doing so stops [automatic configuration](https://github.com/aws/aws-sdk-ruby#configuration)
           return hash unless transfer_config.access_key_id
+
           hash[:credentials] = Aws::Credentials.new(
             transfer_config.access_key_id,
             transfer_config.secret_access_key

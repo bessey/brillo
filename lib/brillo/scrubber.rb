@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Brillo
   # Responsible for creating a fresh scrubbed SQL copy of the database,
   # as specified via config, and uploading to S3
@@ -10,20 +12,21 @@ module Brillo
     # Define some procs as scrubbing strategies for Polo
     SCRUBBERS = {
       default_time: ->(t) { t.nil? ? Time.now.to_s(:sql) : t },
-      email:        ->(e) { Digest::MD5.hexdigest(e) + "@example.com".freeze },
-      jumble:       ->(j) { j.downcase.chars.shuffle!(random: JUMBLE_PRNG.clone).join },
+      email: ->(e) { "#{Digest::MD5.hexdigest(e)}@example.com" },
+      jumble: ->(j) { j.downcase.chars.shuffle!(random: JUMBLE_PRNG.clone).join },
       # strips extensions
-      phone:        ->(n) { n = n.split(' ').first; n && n.length > 9 ? n[0..-5] + n[-1] + n[-2] + n[-3] + n[-4] : n},
-      name:         ->(n) { n.downcase.split(' ').map do |word|
+      phone: ->(n) { n = n.split(' ').first; n && n.length > 9 ? n[0..-5] + n[-1] + n[-2] + n[-3] + n[-4] : n },
+      name: lambda { |n|
+        n.downcase.split(' ').map do |word|
           word.chars.shuffle!(random: JUMBLE_PRNG.clone).join
         end.each(&:capitalize!).join(' ')
       },
-    }
+    }.freeze
 
     TACTICS = {
-      latest: -> (klass) { klass.order("#{klass.primary_key} desc").limit(LATEST_LIMIT).pluck(klass.primary_key) },
-      all:    -> (klass) { klass.pluck(klass.primary_key) }
-    }
+      latest: ->(klass) { klass.order("#{klass.primary_key} desc").limit(LATEST_LIMIT).pluck(klass.primary_key) },
+      all: ->(klass) { klass.pluck(klass.primary_key) },
+    }.freeze
 
     attr_reader :config, :adapter, :transferrer
 
@@ -33,7 +36,7 @@ module Brillo
     end
 
     def scrub!
-      FileUtils.rm config.compressed_filename, force: true
+      FileUtils.rm(config.compressed_filename, force: true)
       configure_polo
       adapter.dump_structure_and_migrations(config)
       explore_all_classes
@@ -42,14 +45,14 @@ module Brillo
     end
 
     def explore_all_classes
-      File.open(config.dump_path, "a") do |sql_file|
+      File.open(config.dump_path, 'a') do |sql_file|
         sql_file.puts(adapter.header)
         klass_association_map.each do |klass, options|
           begin
             klass = deserialize_class(klass)
             tactic = deserialize_tactic(klass, options)
           rescue ConfigParseError => e
-            logger.error "Error in brillo.yml: #{e.message}"
+            logger.error("Error in brillo.yml: #{e.message}")
             next
           end
           associations = options.fetch(:associations, [])
@@ -68,6 +71,7 @@ module Brillo
 
     def compress
       return unless config.compress
+
       execute!("gzip -f #{config.dump_path}")
     end
 
@@ -86,25 +90,23 @@ module Brillo
     end
 
     def obfuscations
-      config.obfuscations.map do |field, strategy|
-        [field, SCRUBBERS.fetch(strategy)]
-      end.to_h
+      config.obfuscations.transform_values do |strategy|
+        SCRUBBERS.fetch(strategy)
+      end
     end
 
     def configure_polo
       obfs = obfuscations
-      adapter = config.db["adapter"]
+      adapter = config.db['adapter']
       Polo.configure do
-        obfuscate obfs
-        if adapter == "mysql2"
-          on_duplicate :ignore
-        end
+        obfuscate(obfs)
+        on_duplicate(:ignore) if adapter == 'mysql2'
       end
     end
 
     def deserialize_class(klass)
       klass.to_s.camelize.constantize
-    rescue
+    rescue StandardError
       raise ConfigParseError, "Could not process class '#{klass}'"
     end
 
