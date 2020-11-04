@@ -8,7 +8,7 @@ if defined? Rails
       end
 
       generators do
-        require 'generators/brillo'
+        require 'generators/brillo/install_generator'
       end
 
       config.after_initialize do
