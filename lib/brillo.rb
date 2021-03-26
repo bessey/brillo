@@ -29,15 +29,15 @@ module Brillo
 
   def self.scrub!(logger: ::Logger.new(STDOUT), filename: nil)
     Brillo::Logger.logger = logger
-		configuration = config
-		configuration.app_name = filename if filename
+    configuration = config
+    configuration.app_name = filename if filename
     Scrubber.new(configuration).scrub!
   end
 
   def self.load!(keep_local: false, logger: ::Logger.new(STDOUT), filename: nil)
     Brillo::Logger.logger = logger
-		configuration = config
-		configuration.app_name = filename if filename
+    configuration = config
+    configuration.app_name = filename if filename
     Loader.new(configuration).load! keep_local
   end
 
@@ -45,8 +45,8 @@ module Brillo
     @config ||= begin
       static_config = YAML.load(ERB.new(File.read("#{Rails.root.to_s}/config/brillo.yml")).result).deep_symbolize_keys
       c = Config.new(static_config)
-			yield c if block_given?
-			c
+      yield c if block_given?
+      c
     end
   end
 

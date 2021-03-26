@@ -24,7 +24,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "aws-sdk-s3", "~> 1"
   spec.add_dependency "activerecord",  ">= 3.2"
   spec.add_dependency "activesupport", ">= 3.2"
-  spec.add_dependency "faker", "~> 2"
 
   spec.add_development_dependency "appraisal"
   spec.add_development_dependency "rspec-rails", "~> 3.7"

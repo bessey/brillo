@@ -1,4 +1,3 @@
-require 'faker'
 module Brillo
   # Responsible for creating a fresh scrubbed SQL copy of the database,
   # as specified via config, and uploading to S3
@@ -19,15 +18,6 @@ module Brillo
           word.chars.shuffle!(random: JUMBLE_PRNG.clone).join
       end.each(&:capitalize!).join(' ')
       },
-      faker_street_address:	->(r) { r.to_s.empty? ? r : Faker::Address.street_address},
-      faker_secondary_address:	->(r) { r.to_s.empty? ? r : Faker::Address.secondary_address},
-      faker_city:	->(r) { r.to_s.empty? ? r : Faker::Address.city},
-      faker_state:	->(r) { r.to_s.empty? ? r : Faker::Address.state_abbr},
-      faker_zip:	->(r) { r.to_s.empty? ? r : Faker::Address.zip},
-      faker_name:	->(r) { r.to_s.empty? ? r : Faker::Name.name},
-      faker_first_name:	->(r) { r.to_s.empty? ? r : Faker::Name.first_name},
-      faker_last_name:	->(r) { r.to_s.empty? ? r : Faker::Name.last_name},
-      faker_phone_number:	->(r) { r.to_s.empty? ? r : Faker::PhoneNumber.phone_number},
     }
 
     TACTICS = {

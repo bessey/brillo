@@ -18,23 +18,6 @@ RSpec.describe Brillo::Scrubber do
     end
 	end
 
-	describe "faker scrubbers" do
-	  it "scrubs with faker gem" do
-	    expect {
-        Brillo::Scrubber::SCRUBBERS[:faker_street_address].call(name)
-        Brillo::Scrubber::SCRUBBERS[:faker_secondary_address].call(name)
-        Brillo::Scrubber::SCRUBBERS[:faker_city].call(name)
-        Brillo::Scrubber::SCRUBBERS[:faker_state].call(name)
-        Brillo::Scrubber::SCRUBBERS[:faker_zip].call(name)
-        Brillo::Scrubber::SCRUBBERS[:faker_name].call(name)
-        Brillo::Scrubber::SCRUBBERS[:faker_first_name].call(name)
-        Brillo::Scrubber::SCRUBBERS[:faker_last_name].call(name)
-        Brillo::Scrubber::SCRUBBERS[:faker_phone_number].call(name)
-			}.not_to raise_error
-
-	  end
-	end
-
   # describe "performance characteristics" do
   #   it "performs well" do
   #     Benchmark.ips do |x|
