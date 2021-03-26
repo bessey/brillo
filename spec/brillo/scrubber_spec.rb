@@ -16,7 +16,7 @@ RSpec.describe Brillo::Scrubber do
     it "scrubs consistently across one run" do
       expect(Brillo::Scrubber::SCRUBBERS[:jumble].call(name)).to eq Brillo::Scrubber::SCRUBBERS[:jumble].call(name)
     end
-	end
+  end
 
   # describe "performance characteristics" do
   #   it "performs well" do
