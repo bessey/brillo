@@ -5,10 +5,15 @@ jobs:
   test:
     name: Run Tests
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        gemfile: [ rails-5.1, rails-5.2, rails-6.0, rails-6.1 ]
+    env:
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
     steps:
     - uses: actions/checkout@v2
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
-      with:
-        bundler-cache: true
-    - run: bundle exec rspec
+    - name: RSpec
+      run: bundle exec appraisal rspec
