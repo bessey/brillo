@@ -18,4 +18,4 @@ jobs:
       with:
         bundler-cache: true
     - name: RSpec
-      run: bundle exec appraisal rspec
+      run: bundle exec appraisal ${{ matrix.gemfile }} rspec
