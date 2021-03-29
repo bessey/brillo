@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/bessey/brillo.svg?branch=master)](https://travis-ci.org/bessey/brillo)
 [![Gem Version](https://badge.fury.io/rb/brillo.svg)](https://badge.fury.io/rb/brillo)
 
 # Brillo
@@ -42,31 +41,32 @@ set :brillo_role, :my_batch_role
 Here's an example `brillo.yml` for IMDB:
 
 ```yaml
-name: imdb            # Namespace the scrubbed file will occupy in S3
-compress: true
+name: imdb # Namespace the scrubbed file will occupy in S3
+compress: true # Compresses the file after scrubbing or not (default: true)
 explore:
-  user:               # Name of ActiveRecord class in snake_case
-    tactic: all       # Scrubbing tactic to use (see Brillo:TACTICS for choices)
-    associations:     # Associations to include in the scrub (ALL associated records included)
+  user: # Name of ActiveRecord class in snake_case
+    tactic: all # Scrubbing tactic to use (see Brillo:TACTICS for choices)
+    associations: # Associations to include in the scrub (ALL associated records included)
       - comments
   movie:
-    tactic: latest    # The latest tactic explores the most recent 1,000 records
+    tactic: latest # The latest tactic explores the most recent 1,000 records
     associations:
       - actors
       - ratings
-  admin/note:         # Corresponds to the Admin::Note class
+  admin/note: # Corresponds to the Admin::Note class
     tactic: all
-obfuscations:         #
-  user.name: name     # Scrub user.name with the "name" scrubber (see Brillo::SCRUBBERS for choices)
+obfuscations: #
+  user.name: name # Scrub user.name with the "name" scrubber (see Brillo::SCRUBBERS for choices)
   user.phone: phone
   user.email: email
 ```
 
 Brillo uses [the official aws-sdk](https://github.com/aws/aws-sdk-ruby) to communicate with S3. There [are a number of ways](https://github.com/aws/aws-sdk-ruby#configuration) to pass your S3 credentials, but the simplest is to set `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` in your environment.
 
-If you'd like to see the gem in use, check out the  [/example_app](https://github.com/bessey/brillo/tree/master/example_app) directory.
+If you'd like to see the gem in use, check out the [/example_app](https://github.com/bessey/brillo/tree/master/example_app) directory.
 
 ### Creating a scrubbed copy of the database in production
+
 ```bash
 $ rake db:scrub
 ```
