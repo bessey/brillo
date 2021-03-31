@@ -1,11 +1,12 @@
 module Brillo
   class Config
-    attr_reader :app_name, :compress, :obfuscations, :klass_association_map, :db, :transfer_config
+    attr_accessor :app_name, :compress, :obfuscations, :klass_association_map, :db, :transfer_config, :recreate_db
 
     def initialize(options = {})
       @app_name =               options.fetch(:name)
       @klass_association_map =  options[:explore] || {}
       @compress =               options.fetch(:compress,  true)
+      @recreate_db =            options.fetch(:recreate_db,  true)
       @transfer_config =        Transferrer::Config.new(**options.fetch(:transfer, {}))
       @obfuscations =           parse_obfuscations(options[:obfuscations] || {})
     rescue KeyError => e

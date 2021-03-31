@@ -11,13 +11,23 @@ module Brillo
       @config = config
     end
 
-    def load!
-      config.transferrer.download
+    def load!(keep_local)
+      download_sql(keep_local)
       recreate_db
       import_sql
     end
 
+    def download_sql(keep_local)
+      if keep_local
+        path = config.compress ? config.compressed_dump_path : config.dump_path
+        return if File.exists? path
+      end
+
+      config.transferrer.download
+    end
+
     def recreate_db
+      return unless config.recreate_db
       config.adapter.recreate_db
     end
 

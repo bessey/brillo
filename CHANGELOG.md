@@ -1,5 +1,14 @@
 # Change Log
 
+## Unreleased
+
+- Added `recreate_db` config option which:
+  - Allows to skip dumping structures and migrations on Brillo.scrub!
+  - Allows to skip db recreation on Brillo.load!
+- Added `filename` scrub/load option to allow changing the name of the resulting scrubbed file or file to import on the DB.
+- Added config option `schema_search_path` support for Postgres so you can specify the schema (if any) on your current pg db.
+- Added `keep_local` param to Brillo.load to prevent downloading a file over and over again if the filename provided is already present. (useful for test runners)
+
 ## 2.0.0
 Upgrade to AWS SDK 3.0, reduce dependence to S3 specifically.
 
