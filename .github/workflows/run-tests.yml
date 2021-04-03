@@ -1,4 +1,4 @@
-name: Ruby Gem
+name: Run Tests
 
 on: [push]
 jobs:
