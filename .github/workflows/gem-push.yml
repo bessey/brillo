@@ -2,9 +2,12 @@ name: Ruby Gem
 
 on:
   workflow_run:
-    workflows: ["Run Tests"]
-    branches: [$default-branch]
-    types: [completed]
+    workflows:
+      - Run Tests
+    branches:
+      - $default-branch
+    types:
+      - completed
 
 jobs:
   build:
