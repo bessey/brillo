@@ -3,4 +3,4 @@ source 'https://rubygems.org'
 # Specify your gem's dependencies in brillo.gemspec
 gemspec
 
-gem 'rails', "~> 4.2.0"
+gem 'rails', "~> 7.0.2"
