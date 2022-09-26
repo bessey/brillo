@@ -2,20 +2,20 @@ module Brillo
   module Adapter
     class Postgres < Base
       def load_command
-        host = config["host"] ? "--host #{config["host"]}" : ""
-        password = config["password"] ? "PGPASSWORD=#{config["password"]} " : ""
-        search_path = config["schema_search_path"] ? "PGOPTIONS=--search_path=#{config["schema_search_path"]} " : ""
+        host = config['host'] ? "--host #{config['host']}" : ''
+        password = config['password'] ? "PGPASSWORD=#{config['password']} " : ''
+        search_path = config['schema_search_path'] ? "PGOPTIONS=--search_path=#{config['schema_search_path']} " : ''
 
         # If present, the database.yml url parameter should take precedence.
-        if url = config["url"]
+        if (url = config['url'])
           uri = URI.parse(url)
           password = uri.password
-          uri.password = nil # We set the URI password component to nil because it's handled by the
-                             # PGPASSWORD environment variable and will be masked later on (see the
-                             # `log_anonymized' method).
+          # We set the URI password component to nil because it's handled by the PGPASSWORD
+          # environment variable and will be masked later on (see the `log_anonymized' method).
+          uri.password = nil
           command_parameters = uri
         else
-          command_parameters = "#{host} -U #{config.fetch("username")} #{config.fetch("database")}"
+          command_parameters = "#{host} -U #{config.fetch('username')} #{config.fetch('database')}"
         end
 
         inline_options = password + search_path
