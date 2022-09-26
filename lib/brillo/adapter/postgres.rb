@@ -5,8 +5,21 @@ module Brillo
         host = config["host"] ? "--host #{config["host"]}" : ""
         password = config["password"] ? "PGPASSWORD=#{config["password"]} " : ""
         search_path = config["schema_search_path"] ? "PGOPTIONS=--search_path=#{config["schema_search_path"]} " : ""
+
+        # If present, the database.yml url parameter should take precedence.
+        if url = config["url"]
+          uri = URI.parse(url)
+          password = uri.password
+          uri.password = nil # We set the URI password component to nil because it's handled by the
+                             # PGPASSWORD environment variable and will be masked later on (see the
+                             # `log_anonymized' method).
+          command_parameters = uri
+        else
+          command_parameters = "#{host} -U #{config.fetch("username")} #{config.fetch("database")}"
+        end
+
         inline_options = password + search_path
-        "#{inline_options}psql #{host} -U #{config.fetch("username")} #{config.fetch("database")}"
+        "#{inline_options}psql #{command_parameters}"
       end
 
       # pgdump without schema does not set sequences, so we have to do it ourselves, or the first insert
