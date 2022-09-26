@@ -11,11 +11,9 @@ module Brillo
 
       def execute!(*command)
         success, stdout, stderr = execute(command)
-        if success
-          [success, stdout, stderr]
-        else
-          raise RuntimeError, "#{stdout} #{stderr}"
-        end
+        raise "#{stdout} #{stderr}" unless success
+
+        [success, stdout, stderr]
       end
 
       private
