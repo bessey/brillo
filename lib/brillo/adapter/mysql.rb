@@ -26,20 +26,20 @@ module Brillo
 
       def load_command
         host = config['host'] ? "--host #{config['host']}" : ''
-        password = config['password'] ? "-p'#{config['password']}'" : ''
+        password = config['password'] ? "MYSQL_PWD='#{config['password']}' " : ''
         # If present, the database.yml url parameter should take precedence.
         if (url = config['url'])
           uri = URI.parse(url)
-          password = uri.password ? "-p'#{uri.password}'" : ''
+          password = uri.password ? "MYSQL_PWD='#{uri.password}' " : ''
           # We set the URI password component to nil because it's handled by the `-p` flag and will
           # be masked later on (see the `log_anonymized' method).
           uri.password = nil
-          command_parameters = "#{uri} #{password}"
+          command_parameters = uri
         else
-          command_parameters = "#{host} -u #{config.fetch('username')} #{password} #{config.fetch('database')}"
+          command_parameters = "#{host} -u #{config.fetch('username')} #{config.fetch('database')}"
         end
 
-        "mysql #{command_parameters}"
+        "#{password}mysql #{command_parameters}"
       end
     end
   end
