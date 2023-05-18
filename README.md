@@ -1,4 +1,6 @@
-[![Gem Version](https://badge.fury.io/rb/brillo.svg)](https://badge.fury.io/rb/brillo)
+### Maintainers wanted! 
+
+I ([@bessey](https://github.com/bessey)) stopped using Brillo years ago. If you are an active user of Brillo prepared to assist with maintenance, please [reach out](https://github.com/bessey/brillo/issues/33).
 
 # Brillo
 
