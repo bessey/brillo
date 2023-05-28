@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Update minimum Rails version to 6.0
+
 ## 2.1.0
 
 - Added `recreate_db` config option which:
